@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { X, Search, Plus } from 'lucide-react';
-import { primaireAromas, secundaireAromas, tertiaireAromas, type AromaCategorie } from '../data/aroma-lexicon';
+import {
+  primaireAromas, secundaireAromas, tertiaireAromas, type AromaCategorie,
+  EN_AROMA_LABELS, EN_CATEGORIE_LABELS, EN_SUBCATEGORIE_LABELS,
+} from '../data/aroma-lexicon';
 import type { Lang } from '../lib/form-labels';
 
 interface AromaPickerProps {
@@ -59,7 +62,7 @@ export function AromaPicker({
                 padding: '0.2rem 0.4rem', fontFamily: 'var(--font-body)', fontSize: '0.72rem',
                 fontWeight: 600, background: c.bg, color: c.color, border: `2px solid ${c.border}`,
               }}>
-                {a}
+                {isEN ? (EN_AROMA_LABELS[a] ?? a) : a}
                 <button type="button" onClick={() => onChange(lijst.filter((x) => x !== a))}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: 'inherit', opacity: 0.7 }}
                   aria-label={isEN ? `Remove ${a}` : `${a} verwijderen`}
@@ -159,6 +162,7 @@ function AromaLijst({
   zoekterm: string;
   lang?: Lang;
 }) {
+  const isEN = lang === 'en';
   const toggle = (aroma: string) =>
     geselecteerd.includes(aroma)
       ? onChange(geselecteerd.filter((a) => a !== aroma))
@@ -166,29 +170,39 @@ function AromaLijst({
 
   const term = zoekterm.toLowerCase();
 
+  const matchesSearch = (a: string) => {
+    if (!term) return true;
+    if (a.toLowerCase().includes(term)) return true;
+    if (isEN) return (EN_AROMA_LABELS[a] ?? '').toLowerCase().includes(term);
+    return false;
+  };
+
   const gefilterd = categorieen.map((cat) => ({
     ...cat,
     subcategorieen: cat.subcategorieen.map((sub) => ({
       ...sub,
-      aromas: sub.aromas.filter((a) => !term || a.toLowerCase().includes(term)),
+      aromas: sub.aromas.filter(matchesSearch),
     })).filter((sub) => sub.aromas.length > 0),
   })).filter((cat) => cat.subcategorieen.length > 0);
 
-  if (gefilterd.length === 0) return <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--color-gray)' }}>{lang === 'en' ? 'No aromas found' : 'Geen aromas gevonden'}</p>;
+  if (gefilterd.length === 0) return <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--color-gray)' }}>{isEN ? 'No aromas found' : 'Geen aromas gevonden'}</p>;
 
   return (
     <div style={{ border: '4px solid var(--color-border)', padding: '0.75rem', background: 'var(--color-surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
       {gefilterd.map((cat) => (
         <div key={cat.categorie}>
           <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--color-gray)', marginBottom: '0.5rem' }}>
-            {cat.categorie}
+            {isEN ? (EN_CATEGORIE_LABELS[cat.categorie] ?? cat.categorie) : cat.categorie}
           </h4>
           {cat.subcategorieen.map((sub) => (
             <div key={sub.naam} style={{ marginBottom: '0.5rem' }}>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--color-gray)', marginBottom: '0.375rem' }}>{sub.naam}</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--color-gray)', marginBottom: '0.375rem' }}>
+                {isEN ? (EN_SUBCATEGORIE_LABELS[sub.naam] ?? sub.naam) : sub.naam}
+              </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
                 {sub.aromas.map((aroma) => {
                   const sel = geselecteerd.includes(aroma);
+                  const label = isEN ? (EN_AROMA_LABELS[aroma] ?? aroma) : aroma;
                   return (
                     <button
                       key={aroma}
@@ -203,7 +217,7 @@ function AromaLijst({
                         transition: 'background 100ms, color 100ms',
                       }}
                     >
-                      {aroma}
+                      {label}
                     </button>
                   );
                 })}
