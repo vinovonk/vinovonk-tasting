@@ -1,6 +1,4 @@
-// Based on the WSET Systematic Approach to Tasting® (SAT) framework.
-// © Wine & Spirit Education Trust. Educational reference only — not an official WSET examination.
-// WSET® is a registered trademark of Wine & Spirit Education Trust. wsetglobal.com
+// Wine tasting form — Systematic Approach to Tasting (SAT) structure.
 import { useState, forwardRef, useImperativeHandle } from 'react';
 import { Eye, Flower2, UtensilsCrossed, Award, FileText } from 'lucide-react';
 import { toast } from 'sonner';
@@ -19,22 +17,22 @@ import {
   conditieOpties, intensiteitVijfOpties, ontwikkelingOpties,
   mousseOpties, zoetheidOpties, schaalVijfOpties, bodyOpties,
   afdronkLengteOpties, kwaliteitOpties, drinkbaarheidOpties,
-} from '../data/wset-wine-options';
+} from '../data/wine-options';
 import { zoekLanden, zoekRegios } from '../data/wijn-regio-database';
-import type { WsetWineTasting, WijnType, AromaKenmerken } from '../types';
+import type { WijnProef, WijnType, AromaKenmerken } from '../types';
 import { createEmptyWineTasting } from '../types';
 import { FL, type Lang, getHerkomstOpties, getOpnieuwKopenOpties, getAanbevolenVoorOpties, getWijnTypeOpties } from '../lib/form-labels';
 
-export interface WsetFormHandle {
-  getData: () => WsetWineTasting;
-  mergeAIData: (data: Partial<WsetWineTasting>) => void;
+export interface WijnFormHandle {
+  getData: () => WijnProef;
+  mergeAIData: (data: Partial<WijnProef>) => void;
 }
 
 interface Props {
-  initialData?: WsetWineTasting;
+  initialData?: WijnProef;
   persoonlijkeNotitie?: string;
   score?: number;
-  onSave: (data: WsetWineTasting, notitie?: string, score?: number) => void;
+  onSave: (data: WijnProef, notitie?: string, score?: number) => void;
   fase?: 'info' | 'proeven';
   lang?: Lang;
 }
@@ -44,7 +42,7 @@ function mergeAromas(a: AromaKenmerken, b: AromaKenmerken): AromaKenmerken {
   return { primair: unique(a.primair, b.primair), secundair: unique(a.secundair, b.secundair), tertiair: unique(a.tertiair, b.tertiair) };
 }
 
-function deepMerge(cur: WsetWineTasting, ai: Partial<WsetWineTasting>): WsetWineTasting {
+function deepMerge(cur: WijnProef, ai: Partial<WijnProef>): WijnProef {
   const m = { ...cur };
   if (ai.wijnNaam && !cur.wijnNaam) m.wijnNaam = ai.wijnNaam;
   if (ai.producent && !cur.producent) m.producent = ai.producent;
@@ -66,9 +64,9 @@ const TABS = ['appearance', 'nose', 'palate', 'conclusions', 'details'];
 const labelStyle = { fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'var(--color-on-surface)' };
 
 
-export const WsetForm = forwardRef<WsetFormHandle, Props>(
-  function WsetForm({ initialData, persoonlijkeNotitie: initNotitie, score: initScore, onSave, fase, lang = 'nl' }, ref) {
-    const [data, setData] = useState<WsetWineTasting>(initialData || createEmptyWineTasting());
+export const WijnForm = forwardRef<WijnFormHandle, Props>(
+  function WijnForm({ initialData, persoonlijkeNotitie: initNotitie, score: initScore, onSave, fase, lang = 'nl' }, ref) {
+    const [data, setData] = useState<WijnProef>(initialData || createEmptyWineTasting());
     const [notitie, setNotitie] = useState(initNotitie || '');
     const [score, setScore] = useState<number | undefined>(initScore);
     const [tab, setTab] = useState('appearance');
@@ -311,24 +309,24 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
               <TabsContent value="details">
                 <Card>
                   <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <ButtonGroup label={L.hoeVerkregen} opties={getHerkomstOpties(lang)} waarde={data.details?.herkomst ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), herkomst: v as NonNullable<WsetWineTasting['details']>['herkomst'] } })} />
+                    <ButtonGroup label={L.hoeVerkregen} opties={getHerkomstOpties(lang)} waarde={data.details?.herkomst ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), herkomst: v as NonNullable<WijnProef['details']>['herkomst'] } })} />
                     <Input label={L.waarTeKoop} placeholder={L.waarTeKoop_placeholder} value={data.details?.waarTeKoop || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), waarTeKoop: e.target.value } })} />
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <Input label={L.proefDatum} type="date" value={data.details?.proefdatum || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), proefdatum: e.target.value } })} />
                       <Input label={L.serveerTemperatuur} placeholder={L.serveerTemperatuur_placeholder} value={data.details?.serveerTemperatuur || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), serveerTemperatuur: e.target.value } })} />
                     </div>
                     <Input label={L.gerechtCombinatie} placeholder={L.gerechtCombinatie_placeholder} value={data.details?.gerechtCombinatie || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), gerechtCombinatie: e.target.value } })} />
-                    <ButtonGroup label={L.opnieuwKopen} opties={getOpnieuwKopenOpties(lang)} waarde={data.details?.opnieuwKopen ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), opnieuwKopen: v as NonNullable<WsetWineTasting['details']>['opnieuwKopen'] } })} />
+                    <ButtonGroup label={L.opnieuwKopen} opties={getOpnieuwKopenOpties(lang)} waarde={data.details?.opnieuwKopen ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), opnieuwKopen: v as NonNullable<WijnProef['details']>['opnieuwKopen'] } })} />
                     <div>
                       <span style={{ ...labelStyle, display: 'block', marginBottom: '0.5rem' }}>{L.aanbevolenVoor}</span>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
                         {getAanbevolenVoorOpties(lang).map(opt => {
-                          const sel = (data.details?.aanbevolenVoor || []).includes(opt.waarde as NonNullable<WsetWineTasting['details']>['aanbevolenVoor'][number]);
+                          const sel = (data.details?.aanbevolenVoor || []).includes(opt.waarde as NonNullable<WijnProef['details']>['aanbevolenVoor'][number]);
                           const current = data.details?.aanbevolenVoor || [];
                           return (
                             <button key={opt.waarde} type="button"
                               onClick={() => {
-                                const newList = sel ? current.filter(v => v !== opt.waarde) : [...current, opt.waarde as NonNullable<WsetWineTasting['details']>['aanbevolenVoor'][number]];
+                                const newList = sel ? current.filter(v => v !== opt.waarde) : [...current, opt.waarde as NonNullable<WijnProef['details']>['aanbevolenVoor'][number]];
                                 setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), aanbevolenVoor: newList } });
                               }}
                               style={{ padding: '0.55rem 0.875rem', fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 700, background: sel ? 'var(--color-on-surface)' : 'var(--color-white)', color: sel ? 'var(--color-background)' : 'var(--color-on-surface)', border: `2px solid ${sel ? 'var(--color-on-surface)' : 'var(--color-border)'}`, cursor: 'pointer' }}>

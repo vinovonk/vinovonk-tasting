@@ -67,10 +67,9 @@ const CONTENT = {
     methodiekLabel: 'Proefsystemen',
     methodiekTitle: 'Proefmethodieken',
 
-    wsetName: 'WSET Systematic Approach to Tasting® (SAT)',
-    wsetDesc: 'Basis voor het wijnformulier. De SAT-methode — Uiterlijk, Neus, Gehemelte, Conclusies — is de meest gebruikte gestructureerde proefmethode ter wereld.',
-    wsetOrg: 'Wine & Spirit Education Trust (WSET) — wsetglobal.com',
-    wsetNote: 'Gebruik van de SAT-structuur voor educatieve doeleinden. Geen officiële WSET-toets of certificering. WSET® is een geregistreerd handelsmerk van Wine & Spirit Education Trust.',
+    satName: 'Systematic Approach to Tasting (SAT)',
+    satDesc: 'Basis voor het wijnformulier. De SAT-methode — Uiterlijk, Neus, Gehemelte, Conclusies — is een gestructureerde proefmethode die breed gebruikt wordt in de wijnwereld.',
+    satNote: 'Gebruikt voor educatieve doeleinden. Geen officieel examen of certificering.',
 
     civcName: 'CIVC Champagne Proefmethodiek',
     civcDesc: 'Basis voor het champagneformulier. Parameters als belgrootte, belpersistentie, moussekwaliteit, autolytisch karakter en dosage zijn gebaseerd op de proefterminologie van het Comité Champagne.',
@@ -118,10 +117,9 @@ const CONTENT = {
     methodiekLabel: 'Tasting Systems',
     methodiekTitle: 'Tasting Methodologies',
 
-    wsetName: 'WSET Systematic Approach to Tasting® (SAT)',
-    wsetDesc: 'Foundation for the wine form. The SAT method — Appearance, Nose, Palate, Conclusions — is the most widely used structured tasting method in the world.',
-    wsetOrg: 'Wine & Spirit Education Trust (WSET) — wsetglobal.com',
-    wsetNote: 'The SAT structure is used here for educational purposes. This is not an official WSET examination or certification. WSET® is a registered trademark of Wine & Spirit Education Trust.',
+    satName: 'Systematic Approach to Tasting (SAT)',
+    satDesc: 'Foundation for the wine form. The SAT method — Appearance, Nose, Palate, Conclusions — is a structured tasting approach widely used in the wine world.',
+    satNote: 'Used here for educational purposes. Not an official examination or certification.',
 
     civcName: 'CIVC Champagne Tasting Methodology',
     civcDesc: 'Foundation for the champagne form. Parameters such as bubble size, bubble persistence, mousse quality, autolytic character and dosage are based on the tasting terminology of the Comité Champagne.',
@@ -188,10 +186,9 @@ export function BronnenView({ lang = 'nl' }: Props) {
         <h2 style={h2Style}>{C.methodiekTitle}</h2>
 
         <div style={creditCard('#8b0018')}>
-          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.9rem' }}>{C.wsetName}</span>
-          <p style={pStyle}>{C.wsetDesc}</p>
-          <p style={mutedStyle}><strong>{C.wsetOrg}</strong></p>
-          <p style={{ ...mutedStyle, borderLeft: '4px solid var(--color-border)', paddingLeft: '0.75rem', margin: 0 }}>{C.wsetNote}</p>
+          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.9rem' }}>{C.satName}</span>
+          <p style={pStyle}>{C.satDesc}</p>
+          <p style={{ ...mutedStyle, borderLeft: '4px solid var(--color-border)', paddingLeft: '0.75rem', margin: 0 }}>{C.satNote}</p>
         </div>
 
         <div style={creditCard('#6b21a8')}>

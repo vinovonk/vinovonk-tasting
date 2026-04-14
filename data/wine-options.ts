@@ -1,4 +1,4 @@
-// WSET Level 3 Wine SAT — options (types inlined, no external imports needed)
+// Wine SAT options (types inlined, no external imports needed)
 
 export const wijnTypeOpties = [
   { waarde: 'wit', label: 'Wit' },

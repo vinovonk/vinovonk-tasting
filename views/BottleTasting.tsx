@@ -2,19 +2,19 @@ import { useState, useRef, useMemo } from 'react';
 import { navigate } from '../router';
 import { getSession, updateFles, compressImage } from '../lib/storage';
 import { FotoCapture } from '../features/FotoCapture';
-import { WsetForm } from '../forms/WsetForm';
+import { WijnForm } from '../forms/WijnForm';
 import { ChampagneForm } from '../forms/ChampagneForm';
 import { SpiritsForm } from '../forms/SpiritsForm';
 import { AlcoholVrijForm } from '../forms/AlcoholVrijForm';
 import { GenericForm } from '../forms/GenericForm';
-import type { WsetFormHandle } from '../forms/WsetForm';
+import type { WijnFormHandle } from '../forms/WijnForm';
 import type { ChampagneFormHandle } from '../forms/ChampagneForm';
 import type { SpiritsFormHandle } from '../forms/SpiritsForm';
 import type { AlcoholVrijFormHandle } from '../forms/AlcoholVrijForm';
 import type { GenericFormHandle } from '../forms/GenericForm';
 import type {
   DrankType, TastingNote, TastingData,
-  WsetWineTasting, ChampagneTasting, WsetSpiritsTasting,
+  WijnProef, ChampagneTasting, SpiritsProef,
   AlcoholVrijTasting, GenericTasting, AnderDrankType,
 } from '../types';
 import {
@@ -116,16 +116,16 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
   const [saving, setSaving] = useState(false);
 
   // Refs for AI integration (Phase 5)
-  const wijnRef = useRef<WsetFormHandle>(null);
+  const wijnRef = useRef<WijnFormHandle>(null);
   const champagneRef = useRef<ChampagneFormHandle>(null);
   const spiritsRef = useRef<SpiritsFormHandle>(null);
   const alcoholVrijRef = useRef<AlcoholVrijFormHandle>(null);
   const genericRef = useRef<GenericFormHandle>(null);
 
   // Compute initial data once — merge with empty to ensure full shape
-  const initialWijnData = useMemo((): WsetWineTasting => {
+  const initialWijnData = useMemo((): WijnProef => {
     if (fles?.drankType !== 'wijn') return createEmptyWineTasting();
-    return { ...createEmptyWineTasting(), ...(fles.tastingData as Partial<WsetWineTasting>) };
+    return { ...createEmptyWineTasting(), ...(fles.tastingData as Partial<WijnProef>) };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const initialChampagneData = useMemo((): ChampagneTasting => {
@@ -133,9 +133,9 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
     return { ...createEmptyChampagneTasting(), ...(fles.tastingData as Partial<ChampagneTasting>) };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const initialSpiritsData = useMemo((): WsetSpiritsTasting => {
+  const initialSpiritsData = useMemo((): SpiritsProef => {
     if (fles?.drankType !== 'spirit') return createEmptySpiritsTasting();
-    return { ...createEmptySpiritsTasting(), ...(fles.tastingData as Partial<WsetSpiritsTasting>) };
+    return { ...createEmptySpiritsTasting(), ...(fles.tastingData as Partial<SpiritsProef>) };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const initialAlcoholVrijData = useMemo((): AlcoholVrijTasting => {
@@ -255,7 +255,7 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
       {/* === FORMS === */}
 
       {drankType === 'wijn' && (
-        <WsetForm
+        <WijnForm
           ref={wijnRef}
           fase={fase}
           initialData={initialWijnData}

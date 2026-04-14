@@ -2,13 +2,10 @@
 
 ## Tasting Methodologies
 
-### WSET Systematic Approach to Tasting® (SAT)
-The wine tasting form follows the **WSET SAT framework** — the most widely used structured tasting method in the world, structured across Appearance, Nose, Palate and Conclusions, with a quality assessment using the BLIC model (Balance, Length, Intensity, Complexity).
+### Systematic Approach to Tasting (SAT)
+The wine tasting form follows the **SAT framework** — a structured tasting method across Appearance, Nose, Palate and Conclusions, with a quality assessment using the BLIC model (Balance, Length, Intensity, Complexity).
 
-**Organisation:** Wine & Spirit Education Trust (WSET)  
-**Website:** [wsetglobal.com](https://www.wsetglobal.com)
-
-> This app uses the SAT structure for educational and personal purposes only. It is not an official WSET examination, certification or endorsed product. WSET® is a registered trademark of Wine & Spirit Education Trust.
+> Used here for educational and personal purposes only. Not an official examination or certification.
 
 ---
 

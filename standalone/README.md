@@ -2,7 +2,7 @@
 
 A personal wine tasting note tool that runs entirely in your browser. No account, no server, no tracking — all data is stored locally via `localStorage`.
 
-Built on established tasting methodologies: **WSET SAT** (wine), **CIVC** (champagne), with a **biodynamic calendar** based on the work of Maria Thun and computed via the Jean Meeus astronomical algorithm.
+Built on established tasting methodologies: **SAT** (wine), **CIVC** (champagne), with a **biodynamic calendar** based on the work of Maria Thun and computed via the Jean Meeus astronomical algorithm.
 
 Live demo: **[vinovonk.com/en/tasting/](https://vinovonk.com/en/tasting/)** (EN) · **[vinovonk.com/proeven/](https://vinovonk.com/proeven/)** (NL)
 
@@ -12,12 +12,12 @@ Live demo: **[vinovonk.com/en/tasting/](https://vinovonk.com/en/tasting/)** (EN)
 
 | Feature | Description |
 |---------|-------------|
-| **Wine form** | WSET SAT — Appearance, Nose, Palate, Conclusions + BLIC quality assessment |
+| **Wine form** | SAT — Appearance, Nose, Palate, Conclusions + BLIC quality assessment |
 | **Champagne form** | Extended with mousse, bubble size, autolytic/oxidative character, dosage, disgorgement |
 | **Spirits form** | Whisky, cognac, gin, rum and more — distillate-specific aroma picker |
 | **Non-alcoholic form** | Wines, beers, kombucha, tea, mocktails — with comparison field |
 | **Generic form** | Beer, sake, cider, mead or anything else |
-| **Aroma picker** | WSET-structured clusters: primary fruit, secondary fermentation, tertiary oxidative/maturation |
+| **Aroma picker** | Structured clusters: primary fruit, secondary fermentation, tertiary oxidative/maturation |
 | **Biodynamic calendar** | Today's day type (fruit/flower/leaf/root) + 14-day overview + moon phase |
 | **Photo capture** | Bottle photo via camera or file library, compressed to localStorage |
 | **Archive & search** | Search and filter all notes across sessions |
@@ -53,10 +53,10 @@ This repository is a **subtree export** of `src/components/proeven/` from the [v
 tasting-notes/
 ├── TastingApp.tsx          # Root island + hash router
 ├── router.ts               # useHashRoute() hook
-├── types.ts                # Zod schemas: TastingNote, WsetWineTasting, etc.
+├── types.ts                # Zod schemas: TastingNote, WijnProef, etc.
 ├── ui/                     # Brutalist UI kit (Button, Card, Tabs, Dialog…)
 ├── views/                  # Page views (Dashboard, SessionDetail, Archive…)
-├── forms/                  # WsetForm, ChampagneForm, SpiritsForm, etc.
+├── forms/                  # WijnForm, ChampagneForm, SpiritsForm, etc.
 ├── features/               # AromaPicker, DruivenInput, FotoCapture, BiodynamischBadge
 ├── data/                   # Option arrays, aroma lexicon, grape/region database
 ├── lib/
@@ -81,7 +81,7 @@ tasting-notes/
 See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for full credits.
 
 **Tasting methodology references:**
-- **WSET SAT** — Wine & Spirit Education Trust ([wsetglobal.com](https://www.wsetglobal.com))
+- **SAT** — Systematic Approach to Tasting
 - **CIVC** — Comité Interprofessionnel du vin de Champagne ([champagne.fr](https://www.champagne.fr))
 
 **Biodynamic calendar:**

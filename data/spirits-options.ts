@@ -1,4 +1,4 @@
-// WSET Level 3 Spirits SAT — options
+// Spirits SAT options
 
 export const spiritTypeOpties = [
   { waarde: 'whisky', label: 'Whisky' },

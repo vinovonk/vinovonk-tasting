@@ -1,4 +1,4 @@
-// WSET Aroma Lexicon — Nederlands
+// Aroma Lexicon — Nederlands
 // Gestructureerd per categorie voor de aroma-picker component
 
 export interface AromaCategorie {

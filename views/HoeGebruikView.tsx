@@ -104,10 +104,10 @@ const CONTENT = {
     stap2Label: 'Stap 2',
     stap2Title: 'Welk formulier voor welke situatie?',
 
-    wijnTitle: 'WSET-methodiek',
+    wijnTitle: 'Proefmethodiek',
     wijnP1: <>
-      Het wijnformulier volgt de <strong>WSET Systematic Approach to Tasting® (SAT)</strong> — de meest gebruikte
-      proefmethode ter wereld, ontwikkeld door het Wine & Spirit Education Trust.
+      Het wijnformulier volgt de <strong>Systematic Approach to Tasting (SAT)</strong> — een gestructureerde
+      proefmethode op basis van uiterlijk, neus, gehemelte en conclusies.
       Ideaal als je gestructureerd wil leren proeven of notities wil vastleggen die je later kunt vergelijken.
     </>,
     wijnP2: <>
@@ -122,7 +122,7 @@ const CONTENT = {
 
     champagneTitle: 'Mousse & autolytisch karakter',
     champagneP: <>
-      Het champagneformulier voegt specifieke parameters toe aan de WSET-basis:
+      Het champagneformulier voegt specifieke parameters toe aan het wijnformulier:
       belgrootte, belpersistentie, moussekwaliteit, autolytisch karakter (brioche, gist, toast)
       en oxidatief karakter. Geschikt voor alle mousserende wijnen (cava, crémant, prosecco).
     </>,
@@ -217,10 +217,10 @@ const CONTENT = {
     stap2Label: 'Step 2',
     stap2Title: 'Which form for which situation?',
 
-    wijnTitle: 'WSET methodology',
+    wijnTitle: 'Tasting methodology',
     wijnP1: <>
-      The wine form follows the <strong>WSET Systematic Approach to Tasting® (SAT)</strong> — the most widely used
-      tasting method in the world, developed by the Wine & Spirit Education Trust.
+      The wine form follows the <strong>Systematic Approach to Tasting (SAT)</strong> — a structured
+      tasting method based on appearance, nose, palate and conclusions.
       Ideal for structured learning or recording notes you can compare later.
     </>,
     wijnP2: <>
@@ -235,7 +235,7 @@ const CONTENT = {
 
     champagneTitle: 'Mousse & autolytic character',
     champagneP: <>
-      The champagne form adds specific parameters to the WSET base:
+      The champagne form adds specific parameters to the wine form:
       bubble size, bubble persistence, mousse quality, autolytic character (brioche, yeast, toast)
       and oxidative character. Suitable for all sparkling wines (cava, crémant, prosecco).
     </>,

@@ -12,21 +12,21 @@ import {
   spiritsKleurOpties, spiritsConditieOpties, spiritsIntensiteitOpties,
   spiritsZoetheidOpties, spiritsTextuurOpties, spiritsAfdronkLengteOpties,
   spiritsComplexiteitOpties, spiritsKwaliteitOpties, spiritsAromaCategorieen,
-} from '../data/wset-spirits-options';
-import type { WsetSpiritsTasting, SpiritType } from '../types';
+} from '../data/spirits-options';
+import type { SpiritsProef, SpiritType } from '../types';
 import { createEmptySpiritsTasting } from '../types';
 import { FL, type Lang } from '../lib/form-labels';
 
 export interface SpiritsFormHandle {
-  getData: () => WsetSpiritsTasting;
-  mergeAIData: (data: Partial<WsetSpiritsTasting>) => void;
+  getData: () => SpiritsProef;
+  mergeAIData: (data: Partial<SpiritsProef>) => void;
 }
 
 interface Props {
-  initialData?: WsetSpiritsTasting;
+  initialData?: SpiritsProef;
   persoonlijkeNotitie?: string;
   score?: number;
-  onSave: (data: WsetSpiritsTasting, notitie?: string, score?: number) => void;
+  onSave: (data: SpiritsProef, notitie?: string, score?: number) => void;
   lang?: Lang;
 }
 
@@ -78,7 +78,7 @@ function AromaCategoryPicker({ label, aromas, selected, onChange }: {
 
 export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
   function SpiritsForm({ initialData, persoonlijkeNotitie: initNotitie, score: initScore, onSave, lang = 'nl' }, ref) {
-    const [data, setData] = useState<WsetSpiritsTasting>(initialData || createEmptySpiritsTasting());
+    const [data, setData] = useState<SpiritsProef>(initialData || createEmptySpiritsTasting());
     const [notitie, setNotitie] = useState(initNotitie || '');
     const [score, setScore] = useState<number | undefined>(initScore);
     const [tab, setTab] = useState('appearance');

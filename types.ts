@@ -2,7 +2,7 @@
 // Geport van vinovonk/vinovonk Next.js app
 
 // ================================================================
-// WSET WINE (Level 3 SAT)
+// WIJN PROEF (SAT)
 // ================================================================
 
 export type WijnType = 'wit' | 'rosé' | 'rood' | 'mousserend' | 'versterkt';
@@ -53,7 +53,7 @@ export interface WijnDetails {
   aanbevolenVoor: AanbevolenVoor[];
 }
 
-export interface WsetWineTasting {
+export interface WijnProef {
   wijnNaam: string;
   producent?: string;
   regio?: string;
@@ -97,7 +97,7 @@ export interface WsetWineTasting {
   details?: WijnDetails;
 }
 
-export function createEmptyWineTasting(): WsetWineTasting {
+export function createEmptyWineTasting(): WijnProef {
   return {
     wijnNaam: '',
     wijnType: 'rood',
@@ -242,12 +242,12 @@ export function createEmptyChampagneTasting(): ChampagneTasting {
 }
 
 // ================================================================
-// SPIRITS (WSET)
+// SPIRITS
 // ================================================================
 
 export type SpiritType = 'whisky' | 'gin' | 'rum' | 'cognac' | 'vodka' | 'tequila' | 'brandy' | 'likeur' | 'anders';
 
-export interface WsetSpiritsTasting {
+export interface SpiritsProef {
   naam: string;
   merk?: string;
   type: SpiritType;
@@ -290,7 +290,7 @@ export interface WsetSpiritsTasting {
   };
 }
 
-export function createEmptySpiritsTasting(): WsetSpiritsTasting {
+export function createEmptySpiritsTasting(): SpiritsProef {
   return {
     naam: '',
     type: 'whisky',
@@ -412,8 +412,8 @@ export function createEmptyAlcoholVrijTasting(): AlcoholVrijTasting {
 export type DrankType = 'wijn' | 'spirit' | 'bier' | 'sake' | 'alcoholvrij' | 'anders' | 'champagne';
 
 export type TastingData =
-  | WsetWineTasting
-  | WsetSpiritsTasting
+  | WijnProef
+  | SpiritsProef
   | GenericTasting
   | AlcoholVrijTasting
   | ChampagneTasting;

@@ -1,5 +1,5 @@
 // Bilingual form label translations
-// UI strings only — option button labels from wset-wine-options.ts are already in English
+// UI strings only — option button labels from wine-options.ts are already in English
 
 export type Lang = 'nl' | 'en';
 
@@ -49,7 +49,7 @@ export const FL = {
     vibeDesc: 'Jouw persoonlijke eerste indruk, in eigen woorden',
     zoekPlaceholder: (label: string) => `Zoek ${label.toLowerCase()}...`,
 
-    // WsetForm info fields
+    // WijnForm info fields
     wijnNaam: 'Wijnnaam',
     typeWijn: 'Type wijn',
     producent: 'Producent',
@@ -64,7 +64,7 @@ export const FL = {
     wijnNaam_placeholder: 'Bijv. Châteauneuf-du-Pape',
     uiterlijkOverig_placeholder: 'Tranen, pétillance, depot...',
 
-    // WsetForm details tab
+    // WijnForm details tab
     hoeVerkregen: 'Hoe verkregen',
     waarTeKoop: 'Waar te koop',
     waarTeKoop_placeholder: 'Bijv. Gall & Gall, Albert Heijn, of directe link',
@@ -154,7 +154,7 @@ export const FL = {
     jePersoonlijkeObservaties: 'Jouw observaties...',
     jePersoonlijkeOpmerkingen: 'Jouw persoonlijke opmerkingen, context, aankoopreden...',
 
-    // WsetForm extra
+    // WijnForm extra
     landPlaceholder: 'Bijv. Frankrijk, Italië, Spanje...',
     regioShort: 'Regio',
     regioPlaceholderMetLand: (land: string) => `Bijv. regio in ${land}...`,
@@ -227,7 +227,7 @@ export const FL = {
     vibeDesc: 'Your personal first impression, in any language',
     zoekPlaceholder: (label: string) => `Search ${label.toLowerCase()}...`,
 
-    // WsetForm info fields
+    // WijnForm info fields
     wijnNaam: 'Wine name',
     typeWijn: 'Wine type',
     producent: 'Producer',
@@ -242,7 +242,7 @@ export const FL = {
     wijnNaam_placeholder: 'E.g. Châteauneuf-du-Pape',
     uiterlijkOverig_placeholder: 'Legs/tears, pétillance, deposit...',
 
-    // WsetForm details tab
+    // WijnForm details tab
     hoeVerkregen: 'How obtained',
     waarTeKoop: 'Where to buy',
     waarTeKoop_placeholder: 'E.g. local wine shop, or direct link',
@@ -332,7 +332,7 @@ export const FL = {
     jePersoonlijkeObservaties: 'Your observations...',
     jePersoonlijkeOpmerkingen: 'Your personal notes, context, reason for purchase...',
 
-    // WsetForm extra
+    // WijnForm extra
     landPlaceholder: 'E.g. France, Italy, Spain...',
     regioShort: 'Region',
     regioPlaceholderMetLand: (land: string) => `E.g. region in ${land}...`,
@@ -362,7 +362,7 @@ export const FL = {
   },
 } as const satisfies Record<Lang, Record<string, string | ((s: string) => string) | ((n: number) => string) | ((n: number, s: string) => string)>>;
 
-// Language-aware option arrays for forms that define their own (not from wset-wine-options.ts)
+// Language-aware option arrays for forms that define their own (not from wine-options.ts)
 export function getKwaliteitOpties(lang: Lang) {
   return lang === 'en'
     ? [

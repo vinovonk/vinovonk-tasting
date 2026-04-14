@@ -1,7 +1,7 @@
 {
   "name": "tasting-notes",
   "version": "1.0.0",
-  "description": "Personal wine tasting note tool based on WSET SAT and CIVC methodology",
+  "description": "Personal wine tasting note tool with SAT and CIVC methodology",
   "private": true,
   "type": "module",
   "scripts": {
