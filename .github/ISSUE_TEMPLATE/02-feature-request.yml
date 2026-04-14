@@ -1,0 +1,37 @@
+name: Feature Request
+description: Suggest an improvement or new feature
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Feature requests are welcome! Note that significant changes are coordinated upstream in the vinovonk mono-repo.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case or pain point
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to see?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Tasting forms
+        - Aroma picker
+        - Biodynamic calendar
+        - Export / Import
+        - UI / Design
+        - Language / Translation
+        - Performance
+        - Other
+    validations:
+      required: false
