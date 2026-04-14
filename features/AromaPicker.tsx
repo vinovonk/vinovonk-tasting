@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Search, Plus } from 'lucide-react';
 import { primaireAromas, secundaireAromas, tertiaireAromas, type AromaCategorie } from '../data/aroma-lexicon';
+import type { Lang } from '../lib/form-labels';
 
 interface AromaPickerProps {
   primair: string[];
@@ -9,6 +10,7 @@ interface AromaPickerProps {
   onPrimairChange: (aromas: string[]) => void;
   onSecundairChange: (aromas: string[]) => void;
   onTertiairChange: (aromas: string[]) => void;
+  lang?: Lang;
 }
 
 const SECTION_LABEL = {
@@ -26,9 +28,11 @@ const BADGE_COLORS = {
 export function AromaPicker({
   primair, secundair, tertiair,
   onPrimairChange, onSecundairChange, onTertiairChange,
+  lang = 'nl',
 }: AromaPickerProps) {
   const [zoekterm, setZoekterm] = useState('');
   const [customAroma, setCustomAroma] = useState('');
+  const isEN = lang === 'en';
 
   const alle = [...primair, ...secundair, ...tertiair];
 
@@ -40,7 +44,7 @@ export function AromaPicker({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-      <span style={labelStyle}>Aroma & flavour characteristics</span>
+      <span style={labelStyle}>{isEN ? 'Aroma & flavour characteristics' : 'Aromakenmerken'}</span>
 
       {/* Geselecteerde aroma's */}
       {alle.length > 0 && (
@@ -58,7 +62,7 @@ export function AromaPicker({
                 {a}
                 <button type="button" onClick={() => onChange(lijst.filter((x) => x !== a))}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: 'inherit', opacity: 0.7 }}
-                  aria-label={`${a} verwijderen`}
+                  aria-label={isEN ? `Remove ${a}` : `${a} verwijderen`}
                 >
                   <X size={11} />
                 </button>
@@ -72,7 +76,7 @@ export function AromaPicker({
       <div style={{ position: 'relative' }}>
         <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-gray)' }} />
         <input
-          placeholder="Zoek aroma..."
+          placeholder={isEN ? 'Search aroma...' : 'Zoek aroma...'}
           value={zoekterm}
           onChange={(e) => setZoekterm(e.target.value)}
           style={{
@@ -100,6 +104,7 @@ export function AromaPicker({
               geselecteerd={geselecteerd}
               onChange={onChange}
               zoekterm={zoekterm}
+              lang={lang}
             />
           </div>
         );
@@ -108,7 +113,7 @@ export function AromaPicker({
       {/* Custom aroma */}
       <div style={{ display: 'flex', gap: '4px' }}>
         <input
-          placeholder="Voeg eigen aroma toe..."
+          placeholder={isEN ? 'Add custom aroma...' : 'Voeg eigen aroma toe...'}
           value={customAroma}
           onChange={(e) => setCustomAroma(e.target.value)}
           onKeyDown={(e) => {
@@ -136,7 +141,7 @@ export function AromaPicker({
             padding: '0.6rem 0.875rem', background: 'var(--color-primary)', color: '#fff',
             border: '4px solid var(--color-border)', cursor: 'pointer', display: 'flex', alignItems: 'center',
           }}
-          aria-label="Aroma toevoegen"
+          aria-label={isEN ? 'Add aroma' : 'Aroma toevoegen'}
         >
           <Plus size={16} />
         </button>
@@ -146,12 +151,13 @@ export function AromaPicker({
 }
 
 function AromaLijst({
-  categorieen, geselecteerd, onChange, zoekterm,
+  categorieen, geselecteerd, onChange, zoekterm, lang = 'nl',
 }: {
   categorieen: AromaCategorie[];
   geselecteerd: string[];
   onChange: (aromas: string[]) => void;
   zoekterm: string;
+  lang?: Lang;
 }) {
   const toggle = (aroma: string) =>
     geselecteerd.includes(aroma)
@@ -168,7 +174,7 @@ function AromaLijst({
     })).filter((sub) => sub.aromas.length > 0),
   })).filter((cat) => cat.subcategorieen.length > 0);
 
-  if (gefilterd.length === 0) return <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--color-gray)' }}>Geen aromas gevonden</p>;
+  if (gefilterd.length === 0) return <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--color-gray)' }}>{lang === 'en' ? 'No aromas found' : 'Geen aromas gevonden'}</p>;
 
   return (
     <div style={{ border: '4px solid var(--color-border)', padding: '0.75rem', background: 'var(--color-surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

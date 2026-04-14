@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { navigate } from '../router';
 import { getBiodynamischInfo, getMaanFaseInfo } from '../lib/biodynamisch';
-import type { BiodynamischDagType } from '../lib/biodynamisch';
+import type { BiodynamischDagType, MaanFase } from '../lib/biodynamisch';
 import { Card, CardContent } from '../ui/Card';
 import { format, addDays } from 'date-fns';
 import { nl as nlLocale, enUS } from 'date-fns/locale';
@@ -120,6 +120,41 @@ const dagNamen = {
   en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 };
 
+const STERRENBEELD_EN: Record<string, string> = {
+  Ram: 'Aries', Stier: 'Taurus', Tweelingen: 'Gemini', Kreeft: 'Cancer',
+  Leeuw: 'Leo', Maagd: 'Virgo', Weegschaal: 'Libra', Schorpioen: 'Scorpio',
+  Boogschutter: 'Sagittarius', Steenbok: 'Capricorn', Waterman: 'Aquarius', Vissen: 'Pisces',
+};
+
+const ELEMENT_EN: Record<string, string> = {
+  Vuur: 'Fire', Aarde: 'Earth', Lucht: 'Air', Water: 'Water',
+};
+
+const MAANFASE_EN: Record<MaanFase, { label: string; beschrijving: string; invloedOpWijn: string }> = {
+  nieuw:            { label: 'New Moon',          beschrijving: 'Moon between earth and sun — not visible. Beginning of a new cycle.', invloedOpWijn: 'Wine may be closed. Less suited for serious assessment.' },
+  wassend_sikkel:   { label: 'Waxing Crescent',   beschrijving: 'Small crescent visible on the right. Energy starts to rise.', invloedOpWijn: 'Wine becomes more expressive. A budding good moment for tasting.' },
+  wassend_kwart:    { label: 'First Quarter',      beschrijving: 'Right half illuminated. Growing energy.', invloedOpWijn: 'Wine opens slowly. Good time to taste.' },
+  wassend_bol:      { label: 'Waxing Gibbous',     beschrijving: 'More than half illuminated. Full energy approaching.', invloedOpWijn: 'Wine very expressive. Excellent for a tasting session.' },
+  vol:              { label: 'Full Moon',           beschrijving: 'Moon fully illuminated. Peak of the cycle.', invloedOpWijn: 'Maximum energy. Wine at full expression — ideal for assessment. Combined with a fruit day = perfect conditions.' },
+  afnemend_bol:     { label: 'Waning Gibbous',      beschrijving: 'Just past full. Energy slowly declining.', invloedOpWijn: 'Wine still open and expressive.' },
+  afnemend_kwart:   { label: 'Last Quarter',        beschrijving: 'Left half illuminated. Energy noticeably decreasing.', invloedOpWijn: 'Wine starts to close. Less ideal for serious assessment.' },
+  afnemend_sikkel:  { label: 'Waning Crescent',     beschrijving: 'Small crescent on the left. End of cycle approaching.', invloedOpWijn: 'Wine closed or withdrawn. Avoid important assessments.' },
+};
+
+const DAG_BESCHRIJVING_EN: Record<BiodynamischDagType, string> = {
+  fruit: 'Wine is open, fruity and expressive. The best conditions for tasting and assessment.',
+  bloem: 'Wine is aromatic and fresh. A good day to taste, especially whites and aromatic styles.',
+  blad:  'Wine may be closed or slightly grassy. Less ideal for serious assessment.',
+  wortel: 'Wine tastes flat, tannic or closed. Avoid serious assessments on root days (recommendation: Cees van Casteren MW).',
+};
+
+const DAG_AANBEVELING_EN: Record<BiodynamischDagType, string> = {
+  fruit:  'Excellent time for a tasting session',
+  bloem:  'Good day for a tasting session',
+  blad:   'Moderate day for tasting',
+  wortel: 'Avoid serious tasting sessions today',
+};
+
 export function BiodynamischView({ lang = 'nl' }: BiodynamischViewProps) {
   const locale = lang === 'en' ? enUS : nlLocale;
   const vandaag = useMemo(() => new Date(), []);
@@ -173,12 +208,12 @@ export function BiodynamischView({ lang = 'nl' }: BiodynamischViewProps) {
               {lang === 'en' ? DAGTYPE_LABEL_EN[bioVandaag.dagType] : bioVandaag.label}
             </div>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, color: thema.textMuted, letterSpacing: '0.06em' }}>
-              {lang === 'en' ? 'Moon in' : 'Maan in'} {bioVandaag.sterrenbeeld} · {bioVandaag.element}
+              {lang === 'en' ? 'Moon in' : 'Maan in'} {lang === 'en' ? (STERRENBEELD_EN[bioVandaag.sterrenbeeld] ?? bioVandaag.sterrenbeeld) : bioVandaag.sterrenbeeld} · {lang === 'en' ? (ELEMENT_EN[bioVandaag.element] ?? bioVandaag.element) : bioVandaag.element}
             </div>
           </div>
         </div>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', color: thema.tekst, margin: '0 0 0.75rem', lineHeight: 1.6 }}>
-          {bioVandaag.beschrijving}
+          {lang === 'en' ? DAG_BESCHRIJVING_EN[bioVandaag.dagType] : bioVandaag.beschrijving}
         </p>
         <div style={{
           display: 'inline-block',
@@ -190,7 +225,7 @@ export function BiodynamischView({ lang = 'nl' }: BiodynamischViewProps) {
           letterSpacing: '0.08em',
           padding: '0.3rem 0.75rem',
         }}>
-          {bioVandaag.aanbeveling}
+          {lang === 'en' ? DAG_AANBEVELING_EN[bioVandaag.dagType] : bioVandaag.aanbeveling}
         </div>
       </div>
 
@@ -201,13 +236,13 @@ export function BiodynamischView({ lang = 'nl' }: BiodynamischViewProps) {
             <span style={{ fontSize: '2.5rem', lineHeight: 1, flexShrink: 0 }}>{maanFase.emoji}</span>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-on-surface)', marginBottom: '0.2rem' }}>
-                {maanFase.label}
+                {lang === 'en' ? MAANFASE_EN[maanFase.fase as MaanFase]?.label ?? maanFase.label : maanFase.label}
               </div>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--color-gray)', lineHeight: 1.5, marginBottom: '0.5rem' }}>
-                {maanFase.beschrijving}
+                {lang === 'en' ? MAANFASE_EN[maanFase.fase as MaanFase]?.beschrijving ?? maanFase.beschrijving : maanFase.beschrijving}
               </div>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--color-on-surface)', lineHeight: 1.5 }}>
-                {maanFase.invloedOpWijn}
+                {lang === 'en' ? MAANFASE_EN[maanFase.fase as MaanFase]?.invloedOpWijn ?? maanFase.invloedOpWijn : maanFase.invloedOpWijn}
               </div>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
@@ -218,7 +253,7 @@ export function BiodynamischView({ lang = 'nl' }: BiodynamischViewProps) {
                 {lang === 'en' ? 'illuminated' : 'verlicht'}
               </div>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.68rem', color: 'var(--color-gray)', marginTop: '0.25rem' }}>
-                dag {Math.round(maanFase.leeftijd)}/29
+                {lang === 'en' ? 'day' : 'dag'} {Math.round(maanFase.leeftijd)}/29
               </div>
             </div>
           </div>

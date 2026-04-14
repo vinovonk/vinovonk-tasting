@@ -5,12 +5,14 @@ import { Camera, ImagePlus, X, RotateCcw } from 'lucide-react';
 interface FotoCaptureProps {
   fotoUrl?: string;
   onFotoChange: (file: File | null, previewUrl: string | null) => void;
+  lang?: 'nl' | 'en';
 }
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
 
-export function FotoCapture({ fotoUrl, onFotoChange }: FotoCaptureProps) {
+export function FotoCapture({ fotoUrl, onFotoChange, lang = 'nl' }: FotoCaptureProps) {
+  const isEN = lang === 'en';
   const [preview, setPreview] = useState<string | null>(fotoUrl || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -20,13 +22,13 @@ export function FotoCapture({ fotoUrl, onFotoChange }: FotoCaptureProps) {
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error('Afbeelding te groot (max 15MB)');
+      toast.error(isEN ? 'Image too large (max 15MB)' : 'Afbeelding te groot (max 15MB)');
       e.target.value = '';
       return;
     }
 
     if (file.type && !ALLOWED_TYPES.includes(file.type)) {
-      toast.error('Ongeldig bestandstype — gebruik JPEG, PNG of WebP');
+      toast.error(isEN ? 'Invalid file type — use JPEG, PNG or WebP' : 'Ongeldig bestandstype — gebruik JPEG, PNG of WebP');
       e.target.value = '';
       return;
     }
@@ -67,14 +69,14 @@ export function FotoCapture({ fotoUrl, onFotoChange }: FotoCaptureProps) {
         fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem',
         letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface)',
       }}>
-        Foto van de fles
+        {isEN ? 'Bottle photo' : 'Foto van de fles'}
       </span>
 
       {preview ? (
         <div style={{ position: 'relative', border: '4px solid var(--color-border)', background: 'var(--color-surface-high)' }}>
           <img
             src={preview}
-            alt="Flesfoto"
+            alt={isEN ? 'Bottle photo' : 'Flesfoto'}
             style={{ width: '100%', maxHeight: '260px', objectFit: 'contain', display: 'block' }}
           />
           <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', display: 'flex', gap: '0.25rem' }}>
@@ -85,7 +87,7 @@ export function FotoCapture({ fotoUrl, onFotoChange }: FotoCaptureProps) {
                 background: 'rgba(255,248,240,0.85)', border: '2px solid var(--color-border)',
                 cursor: 'pointer', padding: '0.35rem', display: 'flex', alignItems: 'center',
               }}
-              title="Opnieuw fotograferen"
+              title={isEN ? 'Retake photo' : 'Opnieuw fotograferen'}
             >
               <RotateCcw size={14} />
             </button>
@@ -96,7 +98,7 @@ export function FotoCapture({ fotoUrl, onFotoChange }: FotoCaptureProps) {
                 background: 'rgba(255,248,240,0.85)', border: '2px solid var(--color-border)',
                 cursor: 'pointer', padding: '0.35rem', display: 'flex', alignItems: 'center',
               }}
-              title="Foto verwijderen"
+              title={isEN ? 'Remove photo' : 'Foto verwijderen'}
             >
               <X size={14} />
             </button>
@@ -106,11 +108,11 @@ export function FotoCapture({ fotoUrl, onFotoChange }: FotoCaptureProps) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2px' }}>
           <button type="button" style={btnBase} onClick={() => cameraInputRef.current?.click()}>
             <Camera size={22} />
-            Foto maken
+            {isEN ? 'Take photo' : 'Foto maken'}
           </button>
           <button type="button" style={btnBase} onClick={() => fileInputRef.current?.click()}>
             <ImagePlus size={22} />
-            Uit bibliotheek
+            {isEN ? 'From library' : 'Uit bibliotheek'}
           </button>
         </div>
       )}

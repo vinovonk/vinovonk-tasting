@@ -1,0 +1,95 @@
+/* Tasting Notes — standalone CSS
+   Brutalist design tokens, isolated from vinovonk.com Astro/Tailwind setup.
+   This file is the single source of truth for styles in the standalone repo.
+*/
+
+/* =========================================================
+   FONTS
+   ========================================================= */
+/* Fonts loaded via <link> in index.html (Google Fonts) */
+
+/* =========================================================
+   TOKENS (light mode)
+   ========================================================= */
+:root {
+  --font-headline: 'Noto Serif', Georgia, serif;
+  --font-body:     'Space Grotesk', system-ui, sans-serif;
+
+  --color-primary:        #8b0018;
+  --color-container:      #b01b2a;
+  --color-background:     #fff8f0;
+  --color-white:          #ffffff;
+  --color-surface:        #f5ede0;
+  --color-surface-high:   #ede0cc;
+  --color-on-surface:     #1a0a00;
+  --color-gray:           #6b5c4e;
+  --color-border:         #1a0a00;
+  --color-gray-light:     #d4c0a8;
+
+  --shadow-card: 4px 4px 0 #000;
+  --gap: 1rem;
+}
+
+/* =========================================================
+   TOKENS (dark mode)
+   ========================================================= */
+[data-theme="dark"] {
+  --color-background:     #0f0800;
+  --color-white:          #1a1000;
+  --color-surface:        #1f1408;
+  --color-surface-high:   #2a1e0f;
+  --color-on-surface:     #f5e6cc;
+  --color-gray:           #b09070;
+  --color-border:         #f5e6cc;
+  --color-gray-light:     #3a2a18;
+}
+
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-radius: 0 !important; /* Brutalist: no rounded corners */
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100dvh;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline);
+  font-weight: 900;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* =========================================================
+   DARK MODE TOGGLE (FOUC prevention)
+   ========================================================= */

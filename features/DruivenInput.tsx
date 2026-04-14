@@ -9,9 +9,11 @@ interface DruivenInputProps {
   wijnType: WijnType;
   land?: string;
   regio?: string;
+  lang?: 'nl' | 'en';
 }
 
-export function DruivenInput({ druiven, onChange, wijnType, land, regio }: DruivenInputProps) {
+export function DruivenInput({ druiven, onChange, wijnType, land, regio, lang = 'nl' }: DruivenInputProps) {
+  const isEN = lang === 'en';
   const [inputValue, setInputValue] = useState('');
   const [showSuggesties, setShowSuggesties] = useState(false);
   const [geselecteerdeIndex, setGeselecteerdeIndex] = useState(0);
@@ -52,7 +54,7 @@ export function DruivenInput({ druiven, onChange, wijnType, land, regio }: Druiv
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface)' }}>
-        Druivenrassen
+        {isEN ? 'Grape varieties' : 'Druivenrassen'}
       </span>
 
       {druiven.length > 0 && (
@@ -77,7 +79,7 @@ export function DruivenInput({ druiven, onChange, wijnType, land, regio }: Druiv
       <div style={{ position: 'relative' }}>
         <input
           ref={inputRef}
-          placeholder={druiven.length === 0 ? 'Typ om te zoeken of voeg druif toe...' : 'Voeg nog een druif toe...'}
+          placeholder={druiven.length === 0 ? (isEN ? 'Type to search or add a grape...' : 'Typ om te zoeken of voeg druif toe...') : (isEN ? 'Add another grape...' : 'Voeg nog een druif toe...')}
           value={inputValue}
           onChange={(e) => { setInputValue(e.target.value); setShowSuggesties(true); }}
           onKeyDown={handleKeyDown}
@@ -115,7 +117,7 @@ export function DruivenInput({ druiven, onChange, wijnType, land, regio }: Druiv
               >
                 <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>{druif.naam}</div>
                 {land && druif.landen.includes(land) && (
-                  <div style={{ fontSize: '0.72rem', color: 'var(--color-gray)' }}>Populair in {land}</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--color-gray)' }}>{isEN ? `Popular in ${land}` : `Populair in ${land}`}</div>
                 )}
               </button>
             ))}
@@ -124,7 +126,7 @@ export function DruivenInput({ druiven, onChange, wijnType, land, regio }: Druiv
       </div>
 
       <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--color-gray)' }}>
-        Typ om te zoeken, of voer een eigen naam in en druk Enter
+        {isEN ? 'Type to search, or enter a custom name and press Enter' : 'Typ om te zoeken, of voer een eigen naam in en druk Enter'}
       </p>
     </div>
   );

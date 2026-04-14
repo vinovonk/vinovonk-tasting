@@ -153,6 +153,34 @@ export const FL = {
     // Scores
     jePersoonlijkeObservaties: 'Jouw observaties...',
     jePersoonlijkeOpmerkingen: 'Jouw persoonlijke opmerkingen, context, aankoopreden...',
+
+    // WsetForm extra
+    landPlaceholder: 'Bijv. Frankrijk, Italië, Spanje...',
+    regioShort: 'Regio',
+    regioPlaceholderMetLand: (land: string) => `Bijv. regio in ${land}...`,
+    regioPlaceholderLeeg: 'Kies eerst een land',
+    naamLabel: 'Naam',
+    wijnNaamJaargangPlaceholder: 'Bijv. Châteauneuf-du-Pape 2019',
+    jaargangMetNv: ' (of NV)',
+    jaargangNvPlaceholder: '2019 of NV',
+    jaargangNormaalPlaceholder: '2019',
+    prijsSimpelePlaceholder: '25.00',
+    afdronkLengteShort: 'Afdronklengte',
+    scoreKort: 'Score (optioneel)',
+
+    // AromaPicker
+    aromaFlavour: 'Aroma & flavour characteristics',
+    zoekAromaPlaceholder: 'Zoek aroma...',
+    voegEigenAroma: 'Voeg eigen aroma toe...',
+    aromaToevoegenAria: 'Aroma toevoegen',
+    geenAromasGevonden: 'Geen aromas gevonden',
+    aromaVerwijderenAria: (label: string) => `${label} verwijderen`,
+
+    // Tabs (korte vorm voor validatie-dictionary)
+    tabUiterlijk: 'Uiterlijk',
+    tabNeus: 'Neus',
+    tabGehemelte: 'Gehemelte',
+    tabConclusies: 'Conclusies',
   },
   en: {
     // Buttons
@@ -303,6 +331,34 @@ export const FL = {
     // Scores
     jePersoonlijkeObservaties: 'Your observations...',
     jePersoonlijkeOpmerkingen: 'Your personal notes, context, reason for purchase...',
+
+    // WsetForm extra
+    landPlaceholder: 'E.g. France, Italy, Spain...',
+    regioShort: 'Region',
+    regioPlaceholderMetLand: (land: string) => `E.g. region in ${land}...`,
+    regioPlaceholderLeeg: 'Choose a country first',
+    naamLabel: 'Name',
+    wijnNaamJaargangPlaceholder: 'E.g. Châteauneuf-du-Pape 2019',
+    jaargangMetNv: ' (or NV)',
+    jaargangNvPlaceholder: '2019 or NV',
+    jaargangNormaalPlaceholder: '2019',
+    prijsSimpelePlaceholder: '25.00',
+    afdronkLengteShort: 'Finish length',
+    scoreKort: 'Score (optional)',
+
+    // AromaPicker
+    aromaFlavour: 'Aroma & flavour characteristics',
+    zoekAromaPlaceholder: 'Search aroma...',
+    voegEigenAroma: 'Add custom aroma...',
+    aromaToevoegenAria: 'Add aroma',
+    geenAromasGevonden: 'No aromas found',
+    aromaVerwijderenAria: (label: string) => `Remove ${label}`,
+
+    // Tabs (short form for validation dictionary)
+    tabUiterlijk: 'Appearance',
+    tabNeus: 'Nose',
+    tabGehemelte: 'Palate',
+    tabConclusies: 'Conclusions',
   },
 } as const satisfies Record<Lang, Record<string, string | ((s: string) => string) | ((n: number) => string) | ((n: number, s: string) => string)>>;
 

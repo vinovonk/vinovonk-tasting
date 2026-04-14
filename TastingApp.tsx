@@ -13,6 +13,7 @@ import { Archive } from './views/Archive';
 import { Settings } from './views/Settings';
 import { BiodynamischView } from './views/BiodynamischView';
 import { HoeGebruikView } from './views/HoeGebruikView';
+import { BronnenView } from './views/BronnenView';
 
 interface TastingAppProps {
   lang?: 'nl' | 'en';
@@ -30,7 +31,7 @@ export function TastingApp({ lang = 'nl' }: TastingAppProps) {
   if (!mounted) {
     return (
       <div style={{ padding: '3rem', textAlign: 'center', fontFamily: 'var(--font-body)' }}>
-        <p>Laden...</p>
+        <p>{lang === 'en' ? 'Loading...' : 'Laden...'}</p>
       </div>
     );
   }
@@ -57,6 +58,8 @@ export function TastingApp({ lang = 'nl' }: TastingAppProps) {
         return <BiodynamischView lang={lang} />;
       case '/hoe-gebruik-je-dit':
         return <HoeGebruikView lang={lang} />;
+      case '/bronnen':
+        return <BronnenView lang={lang} />;
       default:
         return <Dashboard lang={lang} />;
     }

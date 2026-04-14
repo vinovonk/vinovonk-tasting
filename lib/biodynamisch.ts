@@ -1,8 +1,16 @@
 // Biodynamische kalender utility
 // Berekent dagtype op basis van maanpositie in het siderische dierenriemteken.
-// Gebaseerd op het werk van Maria Thun — gebruikt door wijnprofessionals zoals Cees van Casteren MW.
 //
-// Algoritme: Jean Meeus "Astronomical Algorithms" (vereenvoudigd, hoofdstuk 47)
+// Bronnen / Credits:
+//   - Maria Thun (1922–2012): "Aussaattage" / "Working with the Stars"
+//     Biodynamische agrarische kalender, basis voor fruit/bloem/blad/wortel-dagtypes.
+//     mariathun.com
+//   - Jean Meeus: "Astronomical Algorithms", Willmann-Bell, 1991/1998 (ISBN 978-0943396613)
+//     Siderische maanpositie-berekening (hoofdstuk 47), ayanamsa-correctie.
+//   - Cees van Casteren MW (Master of Wine, BBC wine presenter)
+//     Populariseerde toepassing van de biodynamische kalender bij serieuze wijnproeverijen.
+//     Aanbeveling: geen wijnen beoordelen op worteldagen.
+//
 // Nauwkeurigheid: ±1-2° — voldoende, want de maan staat 2-3 dagen per teken.
 
 export type BiodynamischDagType = 'fruit' | 'bloem' | 'blad' | 'wortel';

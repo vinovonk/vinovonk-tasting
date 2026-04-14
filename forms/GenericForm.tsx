@@ -8,6 +8,7 @@ import { Card, CardContent } from '../ui/Card';
 import { Button } from '../ui/Button';
 import type { GenericTasting, AnderDrankType } from '../types';
 import { createEmptyGenericTasting } from '../types';
+import { FL, type Lang, getKwaliteitOpties, getHelderheidOpties, getIntensiteitOpties, getZoetheidOpties, getDrieSchaalOpties, getBodyOpties, getAfdronkOpties } from '../lib/form-labels';
 
 export interface GenericFormHandle {
   getData: () => GenericTasting;
@@ -20,23 +21,26 @@ interface Props {
   persoonlijkeNotitie?: string;
   score?: number;
   onSave: (data: GenericTasting, notitie?: string, score?: number) => void;
+  lang?: Lang;
 }
 
-const drankTypeOpties = [
-  { waarde: 'bier', label: 'Bier' },
-  { waarde: 'sake', label: 'Sake' },
-  { waarde: 'cider', label: 'Cider' },
-  { waarde: 'mede', label: 'Mede' },
-  { waarde: 'anders', label: 'Anders' },
-] as const;
-
-const helderheidOpties = [{ waarde: 'helder', label: 'Helder' }, { waarde: 'troebel', label: 'Troebel' }];
-const intensiteitOpties = [{ waarde: 'licht', label: 'Licht' }, { waarde: 'medium', label: 'Medium' }, { waarde: 'uitgesproken', label: 'Uitgesproken' }];
-const zoetheidOpties = [{ waarde: 'droog', label: 'Droog' }, { waarde: 'halfdroog', label: 'Halfdroog' }, { waarde: 'medium', label: 'Medium' }, { waarde: 'zoet', label: 'Zoet' }];
-const drieSchaalOpties = [{ waarde: 'laag', label: 'Laag' }, { waarde: 'medium', label: 'Medium' }, { waarde: 'hoog', label: 'Hoog' }];
-const bodyOpties = [{ waarde: 'licht', label: 'Licht' }, { waarde: 'medium', label: 'Medium' }, { waarde: 'vol', label: 'Vol' }];
-const afdronkOpties = [{ waarde: 'kort', label: 'Kort' }, { waarde: 'medium', label: 'Medium' }, { waarde: 'lang', label: 'Lang' }];
-const kwaliteitOpties = [{ waarde: 'slecht', label: 'Slecht' }, { waarde: 'acceptabel', label: 'Acceptabel' }, { waarde: 'goed', label: 'Goed' }, { waarde: 'zeer_goed', label: 'Zeer goed' }, { waarde: 'uitmuntend', label: 'Uitstekend' }];
+function getDrankTypeOpties(lang: Lang) {
+  return lang === 'en'
+    ? [
+        { waarde: 'bier', label: 'Beer' },
+        { waarde: 'sake', label: 'Sake' },
+        { waarde: 'cider', label: 'Cider' },
+        { waarde: 'mede', label: 'Mead' },
+        { waarde: 'anders', label: 'Other' },
+      ]
+    : [
+        { waarde: 'bier', label: 'Bier' },
+        { waarde: 'sake', label: 'Sake' },
+        { waarde: 'cider', label: 'Cider' },
+        { waarde: 'mede', label: 'Mede' },
+        { waarde: 'anders', label: 'Anders' },
+      ];
+}
 
 const bierAromas = ['hop','citrus','tropisch fruit','floraal','kruidig','mout','karamel','toffee','chocolade','koffie','brood','koekje','toast','rokerig','gist','banaan','kruidnagel','peper','gras','hooi','hars','noten','honing','biscuit'];
 const sakeAromas = ['rijst','meloen','peer','appel','banaan','bloemen','jasmijn','anijs','umami','mineraal','zeewier','noten','amandel','sesam','room','boter','kaas','champignon','aarde','kruiden'];
@@ -61,7 +65,8 @@ const pillStyle = (sel: boolean) => ({
 });
 
 export const GenericForm = forwardRef<GenericFormHandle, Props>(
-  function GenericForm({ initialData, drankType, persoonlijkeNotitie: initNotitie, score: initScore, onSave }, ref) {
+  function GenericForm({ initialData, drankType, persoonlijkeNotitie: initNotitie, score: initScore, onSave, lang = 'nl' }, ref) {
+    const L = FL[lang];
     const [data, setData] = useState<GenericTasting>(
       initialData || { ...createEmptyGenericTasting(), type: drankType }
     );
@@ -90,18 +95,18 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
         <Card>
           <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <Input label="Naam" placeholder={isBier ? 'Bijv. Westmalle Tripel' : 'Naam...'} value={data.naam} onChange={e => setData({ ...data, naam: e.target.value })} />
-              <Input label="Producent" placeholder="Producent..." value={data.producent || ''} onChange={e => setData({ ...data, producent: e.target.value })} />
+              <Input label={L.naam} placeholder={isBier ? (lang === 'en' ? 'E.g. Westmalle Tripel' : 'Bijv. Westmalle Tripel') : (lang === 'en' ? 'Name...' : 'Naam...')} value={data.naam} onChange={e => setData({ ...data, naam: e.target.value })} />
+              <Input label={L.producent} placeholder={lang === 'en' ? 'Producer...' : 'Producent...'} value={data.producent || ''} onChange={e => setData({ ...data, producent: e.target.value })} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.75rem' }}>
-              <Input label="Stijl" placeholder={isBier ? 'IPA' : data.type === 'sake' ? 'Junmai' : 'Stijl...'} value={data.stijl || ''} onChange={e => setData({ ...data, stijl: e.target.value })} />
-              <Input label="Land" placeholder="Land..." value={data.land || ''} onChange={e => setData({ ...data, land: e.target.value })} />
-              <Input label="Alcohol %" type="number" step="0.1" placeholder="5.5" value={data.alcoholPercentage ?? ''} onChange={e => setData({ ...data, alcoholPercentage: parseFloat(e.target.value) || undefined })} />
-              <Input label="Prijs (€)" type="number" step="0.01" placeholder="4.50" value={data.prijs ?? ''} onChange={e => setData({ ...data, prijs: parseFloat(e.target.value) || undefined })} />
+              <Input label={L.stijl} placeholder={isBier ? 'IPA' : data.type === 'sake' ? 'Junmai' : (lang === 'en' ? 'Style...' : 'Stijl...')} value={data.stijl || ''} onChange={e => setData({ ...data, stijl: e.target.value })} />
+              <Input label={L.land} placeholder={lang === 'en' ? 'Country...' : 'Land...'} value={data.land || ''} onChange={e => setData({ ...data, land: e.target.value })} />
+              <Input label={L.alcoholPercentage} type="number" step="0.1" placeholder="5.5" value={data.alcoholPercentage ?? ''} onChange={e => setData({ ...data, alcoholPercentage: parseFloat(e.target.value) || undefined })} />
+              <Input label={L.spiritPrijs} type="number" step="0.01" placeholder="4.50" value={data.prijs ?? ''} onChange={e => setData({ ...data, prijs: parseFloat(e.target.value) || undefined })} />
             </div>
             <ButtonGroup
-              label="Type drank"
-              opties={drankTypeOpties as unknown as { waarde: string; label: string }[]}
+              label={L.typeDrank}
+              opties={getDrankTypeOpties(lang) as unknown as { waarde: string; label: string }[]}
               waarde={data.type}
               onChange={v => setData({ ...data, type: v as AnderDrankType })}
               size="sm"
@@ -112,19 +117,19 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
         {/* Tabs */}
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList>
-            <TabsTrigger value="appearance">Uiterlijk</TabsTrigger>
-            <TabsTrigger value="nose">Neus</TabsTrigger>
-            <TabsTrigger value="palate">Gehemelte</TabsTrigger>
-            <TabsTrigger value="conclusions">Conclusies</TabsTrigger>
+            <TabsTrigger value="appearance">{L.uiterlijk}</TabsTrigger>
+            <TabsTrigger value="nose">{L.neus}</TabsTrigger>
+            <TabsTrigger value="palate">{L.gehemelte}</TabsTrigger>
+            <TabsTrigger value="conclusions">{L.conclusies}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="appearance">
             <Card>
               <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <ButtonGroup label="Helderheid" opties={helderheidOpties} waarde={data.uiterlijk.helderheid} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, helderheid: v as typeof data.uiterlijk.helderheid } })} />
-                <Input label="Kleur" placeholder="Bijv. goud, amber, donkerbruin..." value={data.uiterlijk.kleur || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, kleur: e.target.value } })} />
-                {isBier && <Input label="Schuimkraag" placeholder="Bijv. dik, wit, aanhoudend..." value={data.uiterlijk.schuim || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, schuim: e.target.value } })} />}
-                <Input label="Overige observaties" placeholder="Overige observaties..." value={data.uiterlijk.overig || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, overig: e.target.value } })} />
+                <ButtonGroup label={L.helderheid} opties={getHelderheidOpties(lang)} waarde={data.uiterlijk.helderheid} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, helderheid: v as typeof data.uiterlijk.helderheid } })} />
+                <Input label={L.kleur} placeholder={L.kleur_placeholder} value={data.uiterlijk.kleur || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, kleur: e.target.value } })} />
+                {isBier && <Input label={L.schuimkraag} placeholder={L.schuimkraag_placeholder} value={data.uiterlijk.schuim || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, schuim: e.target.value } })} />}
+                <Input label={L.overigeObservaties} placeholder={lang === 'en' ? 'Other observations...' : 'Overige observaties...'} value={data.uiterlijk.overig || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, overig: e.target.value } })} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -132,9 +137,9 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
           <TabsContent value="nose">
             <Card>
               <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <ButtonGroup label="Intensiteit" opties={intensiteitOpties} waarde={data.neus.intensiteit} onChange={v => setData({ ...data, neus: { ...data.neus, intensiteit: v as typeof data.neus.intensiteit } })} />
+                <ButtonGroup label={L.intensiteit} opties={getIntensiteitOpties(lang)} waarde={data.neus.intensiteit} onChange={v => setData({ ...data, neus: { ...data.neus, intensiteit: v as typeof data.neus.intensiteit } })} />
                 <div>
-                  <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface)' }}>Aromakenmerken</span>
+                  <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface)' }}>{L.aromakenmerken}</span>
                   {data.neus.aromas.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '0.5rem', marginBottom: '0.5rem' }}>
                       {data.neus.aromas.map(a => (
@@ -156,7 +161,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
                   </div>
                   <div style={{ display: 'flex', gap: '4px', marginTop: '0.5rem' }}>
                     <input
-                      placeholder="Eigen aroma toevoegen..."
+                      placeholder={L.voegEigenAroma}
                       value={customAroma}
                       onChange={e => setCustomAroma(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter' && customAroma.trim()) { e.preventDefault(); setData({ ...data, neus: { ...data.neus, aromas: [...data.neus.aromas, customAroma.trim()] } }); setCustomAroma(''); } }}
@@ -174,13 +179,13 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
           <TabsContent value="palate">
             <Card>
               <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <ButtonGroup label="Zoetheid" opties={zoetheidOpties} waarde={data.gehemelte.zoetheid} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zoetheid: v as typeof data.gehemelte.zoetheid } })} />
-                <ButtonGroup label="Zuurgraad" opties={drieSchaalOpties} waarde={data.gehemelte.zuurgraad} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zuurgraad: v as typeof data.gehemelte.zuurgraad } })} />
-                {isBier && <ButtonGroup label="Bitterheid" opties={drieSchaalOpties} waarde={data.gehemelte.bitterheid || null} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, bitterheid: v as typeof data.gehemelte.bitterheid } })} />}
-                <ButtonGroup label="Body" opties={bodyOpties} waarde={data.gehemelte.body} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, body: v as typeof data.gehemelte.body } })} />
-                <ButtonGroup label="Koolzuur" opties={drieSchaalOpties} waarde={data.gehemelte.koolzuur || null} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, koolzuur: v as typeof data.gehemelte.koolzuur } })} />
+                <ButtonGroup label={L.zoetheid} opties={getZoetheidOpties(lang)} waarde={data.gehemelte.zoetheid} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zoetheid: v as typeof data.gehemelte.zoetheid } })} />
+                <ButtonGroup label={L.zuurgraad} opties={getDrieSchaalOpties(lang)} waarde={data.gehemelte.zuurgraad} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zuurgraad: v as typeof data.gehemelte.zuurgraad } })} />
+                {isBier && <ButtonGroup label={L.bitterheid} opties={getDrieSchaalOpties(lang)} waarde={data.gehemelte.bitterheid || null} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, bitterheid: v as typeof data.gehemelte.bitterheid } })} />}
+                <ButtonGroup label={L.body} opties={getBodyOpties(lang)} waarde={data.gehemelte.body} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, body: v as typeof data.gehemelte.body } })} />
+                <ButtonGroup label={L.koolzuur} opties={getDrieSchaalOpties(lang)} waarde={data.gehemelte.koolzuur || null} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, koolzuur: v as typeof data.gehemelte.koolzuur } })} />
                 <div>
-                  <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface)' }}>Smaakkenmerken</span>
+                  <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface)' }}>{L.smaakkenmerken}</span>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px', maxHeight: '160px', overflowY: 'auto', marginTop: '0.5rem' }}>
                     {aromas.map(a => (
                       <button key={a} type="button" onClick={() => setData({ ...data, gehemelte: { ...data.gehemelte, smaken: toggle(data.gehemelte.smaken, a) } })} style={pillStyle(data.gehemelte.smaken.includes(a))}>
@@ -189,7 +194,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
                     ))}
                   </div>
                 </div>
-                <ButtonGroup label="Afdronk" opties={afdronkOpties} waarde={data.gehemelte.afdronk} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, afdronk: v as typeof data.gehemelte.afdronk } })} />
+                <ButtonGroup label={L.afdronk} opties={getAfdronkOpties(lang)} waarde={data.gehemelte.afdronk} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, afdronk: v as typeof data.gehemelte.afdronk } })} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -197,9 +202,9 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
           <TabsContent value="conclusions">
             <Card>
               <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <ButtonGroup label="Kwaliteitsniveau" opties={kwaliteitOpties} waarde={data.conclusie.kwaliteit} onChange={v => setData({ ...data, conclusie: { kwaliteit: v as typeof data.conclusie.kwaliteit } })} />
-                <Textarea label="Persoonlijke notities" placeholder="Jouw observaties..." value={notitie} onChange={e => setNotitie(e.target.value)} rows={4} />
-                <Input label="Score (optioneel, 1–10)" type="number" min={1} max={10} placeholder="7" value={score ?? ''} onChange={e => setScore(e.target.value ? parseInt(e.target.value) : undefined)} />
+                <ButtonGroup label={L.kwaliteitsniveau} opties={getKwaliteitOpties(lang)} waarde={data.conclusie.kwaliteit} onChange={v => setData({ ...data, conclusie: { kwaliteit: v as typeof data.conclusie.kwaliteit } })} />
+                <Textarea label={L.persoonlijkeNotities} placeholder={L.jePersoonlijkeObservaties} value={notitie} onChange={e => setNotitie(e.target.value)} rows={4} />
+                <Input label={L.score} type="number" min={1} max={10} placeholder="7" value={score ?? ''} onChange={e => setScore(e.target.value ? parseInt(e.target.value) : undefined)} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -207,10 +212,10 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 
         {/* Navigation */}
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          {tab !== 'appearance' && <Button variant="outline" onClick={prevTab} style={{ flex: 1 }}>Vorige</Button>}
+          {tab !== 'appearance' && <Button variant="outline" onClick={prevTab} style={{ flex: 1 }}>{L.vorige}</Button>}
           {tab !== 'conclusions'
-            ? <Button onClick={nextTab} style={{ flex: 1 }}>Volgende</Button>
-            : <Button onClick={() => onSave(data, notitie, score)} style={{ flex: 1 }}>Opslaan</Button>
+            ? <Button onClick={nextTab} style={{ flex: 1 }}>{L.volgende}</Button>
+            : <Button onClick={() => onSave(data, notitie, score)} style={{ flex: 1 }}>{L.opslaan}</Button>
           }
         </div>
       </div>

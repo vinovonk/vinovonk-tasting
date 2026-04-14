@@ -233,7 +233,7 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
       {/* Foto */}
       <Card style={{ marginBottom: '1.5rem' }}>
         <CardContent style={{ paddingTop: '1.25rem' }}>
-          <FotoCapture fotoUrl={fles.fotoPath} onFotoChange={handleFotoChange} />
+          <FotoCapture fotoUrl={fles.fotoPath} onFotoChange={handleFotoChange} lang={lang} />
         </CardContent>
       </Card>
 
@@ -262,6 +262,7 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
           persoonlijkeNotitie={fles.persoonlijkeNotitie}
           score={fles.score}
           onSave={handleSave}
+          lang={lang}
         />
       )}
 
@@ -273,6 +274,7 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
           persoonlijkeNotitie={fles.persoonlijkeNotitie}
           score={fles.score}
           onSave={handleSave}
+          lang={lang}
         />
       )}
 
@@ -283,6 +285,7 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
           persoonlijkeNotitie={fles.persoonlijkeNotitie}
           score={fles.score}
           onSave={handleSave}
+          lang={lang}
         />
       )}
 
@@ -293,6 +296,7 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
           persoonlijkeNotitie={fles.persoonlijkeNotitie}
           score={fles.score}
           onSave={handleSave}
+          lang={lang}
         />
       )}
 
@@ -304,6 +308,7 @@ export function BottleTasting({ sessionId, flesId, lang = 'nl' }: BottleTastingP
           persoonlijkeNotitie={fles.persoonlijkeNotitie}
           score={fles.score}
           onSave={handleSave}
+          lang={lang}
         />
       )}
 

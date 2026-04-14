@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import { navigate } from '../router';
 import { getSessions } from '../lib/storage';
 import { getBiodynamischInfo } from '../lib/biodynamisch';
+import type { BiodynamischDagType } from '../lib/biodynamisch';
 import type { SessionSummary } from '../types';
+
+const DAGTYPE_LABEL_EN: Record<BiodynamischDagType, string> = {
+  fruit: 'Fruit day', bloem: 'Flower day', blad: 'Leaf day', wortel: 'Root day',
+};
+const DAGTYPE_AANBEVELING_EN: Record<BiodynamischDagType, string> = {
+  fruit: 'Excellent time for a tasting session',
+  bloem: 'Good day for a tasting session',
+  blad: 'Moderate day for tasting',
+  wortel: 'Avoid serious tasting sessions today',
+};
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 
@@ -66,8 +77,8 @@ export function Dashboard({ lang = 'nl' }: DashboardProps) {
           }}
         >
           <span>{bio.emoji}</span>
-          <span>{bio.label}</span>
-          <span style={{ opacity: 0.7 }}>— {bio.aanbeveling}</span>
+          <span>{lang === 'en' ? DAGTYPE_LABEL_EN[bio.dagType] : bio.label}</span>
+          <span style={{ opacity: 0.7 }}>— {lang === 'en' ? DAGTYPE_AANBEVELING_EN[bio.dagType] : bio.aanbeveling}</span>
           <span style={{ opacity: 0.5, marginLeft: '0.25rem' }}>›</span>
         </button>
       </div>
@@ -260,6 +271,23 @@ export function Dashboard({ lang = 'nl' }: DashboardProps) {
             }}
           >
             {lang === 'en' ? 'How to use' : 'Hoe gebruik je dit?'}
+          </button>
+          <button
+            onClick={() => navigate('/bronnen')}
+            style={{
+              background: 'none',
+              border: '2px solid var(--color-border)',
+              padding: '0.5rem 1rem',
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              color: 'var(--color-gray)',
+            }}
+          >
+            {lang === 'en' ? 'Sources' : 'Bronnen'}
           </button>
         </div>
       )}

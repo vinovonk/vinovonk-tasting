@@ -1,3 +1,6 @@
+// Based on the WSET Systematic Approach to Tasting® (SAT) framework.
+// © Wine & Spirit Education Trust. Educational reference only — not an official WSET examination.
+// WSET® is a registered trademark of Wine & Spirit Education Trust. wsetglobal.com
 import { useState, forwardRef, useImperativeHandle } from 'react';
 import { Eye, Flower2, UtensilsCrossed, Award, FileText } from 'lucide-react';
 import { toast } from 'sonner';
@@ -20,6 +23,7 @@ import {
 import { zoekLanden, zoekRegios } from '../data/wijn-regio-database';
 import type { WsetWineTasting, WijnType, AromaKenmerken } from '../types';
 import { createEmptyWineTasting } from '../types';
+import { FL, type Lang, getHerkomstOpties, getOpnieuwKopenOpties, getAanbevolenVoorOpties, getWijnTypeOpties } from '../lib/form-labels';
 
 export interface WsetFormHandle {
   getData: () => WsetWineTasting;
@@ -32,6 +36,7 @@ interface Props {
   score?: number;
   onSave: (data: WsetWineTasting, notitie?: string, score?: number) => void;
   fase?: 'info' | 'proeven';
+  lang?: Lang;
 }
 
 function mergeAromas(a: AromaKenmerken, b: AromaKenmerken): AromaKenmerken {
@@ -60,16 +65,14 @@ const TABS = ['appearance', 'nose', 'palate', 'conclusions', 'details'];
 
 const labelStyle = { fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'var(--color-on-surface)' };
 
-const herkomstOpties = [{ waarde: 'gekocht', label: 'Gekocht' }, { waarde: 'pr_sample', label: 'PR Sample' }, { waarde: 'cadeau', label: 'Cadeau' }, { waarde: 'event', label: 'Event' }, { waarde: 'podcast', label: 'Podcast' }];
-const opnieuwKopenOpties = [{ waarde: 'ja', label: 'Ja' }, { waarde: 'misschien', label: 'Misschien' }, { waarde: 'nee', label: 'Nee' }];
-const aanbevolenVoorOpties = [{ waarde: 'beginners', label: 'Beginners' }, { waarde: 'gevorderden', label: 'Gevorderden' }, { waarde: 'feest', label: 'Feest' }, { waarde: 'diner', label: 'Diner' }, { waarde: 'cadeautip', label: 'Cadeautip' }];
 
 export const WsetForm = forwardRef<WsetFormHandle, Props>(
-  function WsetForm({ initialData, persoonlijkeNotitie: initNotitie, score: initScore, onSave, fase }, ref) {
+  function WsetForm({ initialData, persoonlijkeNotitie: initNotitie, score: initScore, onSave, fase, lang = 'nl' }, ref) {
     const [data, setData] = useState<WsetWineTasting>(initialData || createEmptyWineTasting());
     const [notitie, setNotitie] = useState(initNotitie || '');
     const [score, setScore] = useState<number | undefined>(initScore);
     const [tab, setTab] = useState('appearance');
+    const L = FL[lang];
 
     useImperativeHandle(ref, () => ({
       getData: () => data,
@@ -81,27 +84,27 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
 
     const handleSave = () => {
       const missing: { label: string; tab: string }[] = [];
-      if (!data.uiterlijk.helderheid) missing.push({ label: 'Helderheid', tab: 'appearance' });
-      if (!data.uiterlijk.intensiteit) missing.push({ label: 'Intensiteit', tab: 'appearance' });
-      if (!data.uiterlijk.kleur) missing.push({ label: 'Kleur', tab: 'appearance' });
-      if (!data.neus.conditie) missing.push({ label: 'Conditie', tab: 'nose' });
-      if (!data.neus.intensiteit) missing.push({ label: 'Intensiteit', tab: 'nose' });
-      if (!data.neus.ontwikkeling) missing.push({ label: 'Ontwikkeling', tab: 'nose' });
-      if (!data.gehemelte.zoetheid) missing.push({ label: 'Zoetheid', tab: 'palate' });
-      if (!data.gehemelte.zuurgraad) missing.push({ label: 'Zuurgraad', tab: 'palate' });
-      if (!data.gehemelte.alcohol) missing.push({ label: 'Alcohol', tab: 'palate' });
-      if (!data.gehemelte.body) missing.push({ label: 'Body', tab: 'palate' } /* Body = internationaal gebruikte wijnterm */);
-      if (!data.gehemelte.smaakIntensiteit) missing.push({ label: 'Smaakintensiteit', tab: 'palate' });
-      if (!data.gehemelte.afdronk.lengte) missing.push({ label: 'Afdronklengte', tab: 'palate' });
-      if (!data.conclusie.kwaliteit) missing.push({ label: 'Kwaliteitsniveau', tab: 'conclusions' });
-      if (!data.conclusie.drinkbaarheid) missing.push({ label: 'Drinkbaarheid', tab: 'conclusions' });
+      if (!data.uiterlijk.helderheid) missing.push({ label: L.helderheid, tab: 'appearance' });
+      if (!data.uiterlijk.intensiteit) missing.push({ label: L.intensiteit, tab: 'appearance' });
+      if (!data.uiterlijk.kleur) missing.push({ label: L.kleur, tab: 'appearance' });
+      if (!data.neus.conditie) missing.push({ label: L.conditie, tab: 'nose' });
+      if (!data.neus.intensiteit) missing.push({ label: L.intensiteit, tab: 'nose' });
+      if (!data.neus.ontwikkeling) missing.push({ label: L.ontwikkeling, tab: 'nose' });
+      if (!data.gehemelte.zoetheid) missing.push({ label: L.zoetheid, tab: 'palate' });
+      if (!data.gehemelte.zuurgraad) missing.push({ label: L.zuurgraad, tab: 'palate' });
+      if (!data.gehemelte.alcohol) missing.push({ label: L.alcohol, tab: 'palate' });
+      if (!data.gehemelte.body) missing.push({ label: 'Body', tab: 'palate' });
+      if (!data.gehemelte.smaakIntensiteit) missing.push({ label: L.smaakintensiteit, tab: 'palate' });
+      if (!data.gehemelte.afdronk.lengte) missing.push({ label: L.afdronkLengteShort, tab: 'palate' });
+      if (!data.conclusie.kwaliteit) missing.push({ label: L.kwaliteitsniveau, tab: 'conclusions' });
+      if (!data.conclusie.drinkbaarheid) missing.push({ label: L.drinkbaarheid, tab: 'conclusions' });
       if (missing.length > 0) {
-        const tabNames: Record<string, string> = { appearance: 'Uiterlijk', nose: 'Neus', palate: 'Gehemelte', conclusions: 'Conclusies' };
+        const tabNames: Record<string, string> = { appearance: L.tabUiterlijk, nose: L.tabNeus, palate: L.tabGehemelte, conclusions: L.tabConclusies };
         const perTab = missing.reduce<Record<string, string[]>>((acc, m) => { (acc[m.tab] = acc[m.tab] || []).push(m.label); return acc; }, {});
-        toast.error(`Nog ${missing.length} veld${missing.length > 1 ? 'en' : ''} in te vullen`, {
+        toast.error(L.missingFields(missing.length), {
           description: Object.entries(perTab).map(([t, ls]) => `${tabNames[t]}: ${ls.join(', ')}`).join(' · '),
           duration: 8000,
-          action: { label: `Ga naar ${tabNames[missing[0].tab]}`, onClick: () => setTab(missing[0].tab) },
+          action: { label: L.goTo(tabNames[missing[0].tab]), onClick: () => setTab(missing[0].tab) },
         });
         setTab(missing[0].tab);
         return;
@@ -132,26 +135,26 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
         {toonInfo && (
           <Card>
             <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <ButtonGroup label="Type wijn" opties={wijnTypeOpties as unknown as { waarde: string; label: string }[]} waarde={data.wijnType} onChange={v => setData({ ...data, wijnType: v as WijnType, uiterlijk: { ...data.uiterlijk, kleur: null } })} />
+              <ButtonGroup label={L.typeWijn} opties={getWijnTypeOpties(lang) as unknown as { waarde: string; label: string }[]} waarde={data.wijnType} onChange={v => setData({ ...data, wijnType: v as WijnType, uiterlijk: { ...data.uiterlijk, kleur: null } })} />
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-                  <span style={labelStyle}>Land</span>
-                  <AutocompleteInput placeholder="Bijv. Frankrijk, Italië, Spanje..." value={data.land || ''} onChange={v => setData({ ...data, land: v })} suggesties={zoekLanden(data.land || '')} />
+                  <span style={labelStyle}>{L.land}</span>
+                  <AutocompleteInput placeholder={L.landPlaceholder} value={data.land || ''} onChange={v => setData({ ...data, land: v })} suggesties={zoekLanden(data.land || '')} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-                  <span style={labelStyle}>Regio</span>
-                  <AutocompleteInput placeholder={data.land ? `Bijv. regio in ${data.land}...` : 'Kies eerst een land'} value={data.regio || ''} onChange={v => setData({ ...data, regio: v })} suggesties={zoekRegios(data.land, data.regio || '')} />
+                  <span style={labelStyle}>{L.regioShort}</span>
+                  <AutocompleteInput placeholder={data.land ? L.regioPlaceholderMetLand(data.land) : L.regioPlaceholderLeeg} value={data.regio || ''} onChange={v => setData({ ...data, regio: v })} suggesties={zoekRegios(data.land, data.regio || '')} />
                 </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <Input label="Naam" placeholder="Bijv. Châteauneuf-du-Pape 2019" value={data.wijnNaam} onChange={e => setData({ ...data, wijnNaam: e.target.value })} />
-                <Input label="Producent" placeholder="Bijv. Domaine du Vieux Télégraphe" value={data.producent || ''} onChange={e => setData({ ...data, producent: e.target.value })} />
+                <Input label={L.naamLabel} placeholder={L.wijnNaamJaargangPlaceholder} value={data.wijnNaam} onChange={e => setData({ ...data, wijnNaam: e.target.value })} />
+                <Input label={L.producent} placeholder={L.producent_placeholder} value={data.producent || ''} onChange={e => setData({ ...data, producent: e.target.value })} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <Input
-                  label={`Jaargang${data.wijnType === 'mousserend' ? ' (of NV)' : ''}`}
+                  label={`${L.jaargang}${data.wijnType === 'mousserend' ? L.jaargangMetNv : ''}`}
                   type="text"
-                  placeholder={data.wijnType === 'mousserend' ? '2019 of NV' : '2019'}
+                  placeholder={data.wijnType === 'mousserend' ? L.jaargangNvPlaceholder : L.jaargangNormaalPlaceholder}
                   value={data.jaargang === 0 ? 'NV' : data.jaargang || ''}
                   onChange={e => {
                     const v = e.target.value.toUpperCase();
@@ -159,9 +162,9 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
                     else setData({ ...data, jaargang: parseInt(v) || undefined });
                   }}
                 />
-                <Input label="Prijs (€)" type="number" step="0.01" placeholder="25.00" value={data.prijs ?? ''} onChange={e => setData({ ...data, prijs: parseFloat(e.target.value) || undefined })} />
+                <Input label={L.prijs} type="number" step="0.01" placeholder={L.prijsSimpelePlaceholder} value={data.prijs ?? ''} onChange={e => setData({ ...data, prijs: parseFloat(e.target.value) || undefined })} />
               </div>
-              <DruivenInput druiven={data.druivenras || []} onChange={druiven => setData({ ...data, druivenras: druiven })} wijnType={data.wijnType} land={data.land} regio={data.regio} />
+              <DruivenInput druiven={data.druivenras || []} onChange={druiven => setData({ ...data, druivenras: druiven })} wijnType={data.wijnType} land={data.land} regio={data.regio} lang={lang} />
             </CardContent>
           </Card>
         )}
@@ -173,27 +176,27 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
               <TabsList>
                 <TabsTrigger value="appearance">
                   <Eye size={14} style={{ marginRight: '0.25rem' }} />
-                  <span>Uiterlijk</span>
+                  <span>{L.uiterlijk}</span>
                   {cA > 0 && <span style={{ ...badgeStyle, marginLeft: '0.25rem' }}>{cA}</span>}
                 </TabsTrigger>
                 <TabsTrigger value="nose">
                   <Flower2 size={14} style={{ marginRight: '0.25rem' }} />
-                  <span>Neus</span>
+                  <span>{L.neus}</span>
                   {cN > 0 && <span style={{ ...badgeStyle, marginLeft: '0.25rem' }}>{cN}</span>}
                 </TabsTrigger>
                 <TabsTrigger value="palate">
                   <UtensilsCrossed size={14} style={{ marginRight: '0.25rem' }} />
-                  <span>Gehemelte</span>
+                  <span>{L.gehemelte}</span>
                   {cP > 0 && <span style={{ ...badgeStyle, marginLeft: '0.25rem' }}>{cP}</span>}
                 </TabsTrigger>
                 <TabsTrigger value="conclusions">
                   <Award size={14} style={{ marginRight: '0.25rem' }} />
-                  <span>Conclusies</span>
+                  <span>{L.conclusies}</span>
                   {cC > 0 && <span style={{ ...badgeStyle, marginLeft: '0.25rem' }}>{cC}</span>}
                 </TabsTrigger>
                 <TabsTrigger value="details">
                   <FileText size={14} style={{ marginRight: '0.25rem' }} />
-                  <span>Details</span>
+                  <span>{L.details}</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -201,10 +204,10 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
               <TabsContent value="appearance">
                 <Card>
                   <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <ButtonGroup label="Helderheid" opties={helderheidOpties as unknown as { waarde: string; label: string }[]} waarde={data.uiterlijk.helderheid} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, helderheid: v as typeof data.uiterlijk.helderheid } })} />
-                    <ButtonGroup label="Intensiteit" opties={intensiteitDrieOpties as unknown as { waarde: string; label: string }[]} waarde={data.uiterlijk.intensiteit} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, intensiteit: v as typeof data.uiterlijk.intensiteit } })} />
-                    <ButtonGroup label="Kleur" opties={kleurOpties as unknown as { waarde: string; label: string; hex?: string }[]} waarde={data.uiterlijk.kleur} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, kleur: v as typeof data.uiterlijk.kleur } })} showColor />
-                    <Textarea label="Overige observaties" placeholder="Tranen, pétillance, depot..." value={data.uiterlijk.overig || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, overig: e.target.value } })} rows={2} />
+                    <ButtonGroup label={L.helderheid} opties={helderheidOpties as unknown as { waarde: string; label: string }[]} waarde={data.uiterlijk.helderheid} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, helderheid: v as typeof data.uiterlijk.helderheid } })} />
+                    <ButtonGroup label={L.intensiteit} opties={intensiteitDrieOpties as unknown as { waarde: string; label: string }[]} waarde={data.uiterlijk.intensiteit} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, intensiteit: v as typeof data.uiterlijk.intensiteit } })} />
+                    <ButtonGroup label={L.kleur} opties={kleurOpties as unknown as { waarde: string; label: string; hex?: string }[]} waarde={data.uiterlijk.kleur} onChange={v => setData({ ...data, uiterlijk: { ...data.uiterlijk, kleur: v as typeof data.uiterlijk.kleur } })} showColor />
+                    <Textarea label={L.overigeObservaties} placeholder={L.uiterlijkOverig_placeholder} value={data.uiterlijk.overig || ''} onChange={e => setData({ ...data, uiterlijk: { ...data.uiterlijk, overig: e.target.value } })} rows={2} />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -214,12 +217,12 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
                 <Card>
                   <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div style={{ border: '4px solid var(--color-border)', padding: '1rem', background: 'var(--color-surface)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      <span style={{ ...labelStyle, fontStyle: 'italic' }}>Vibe — waar doet het je aan denken?</span>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--color-gray)', margin: 0 }}>Jouw persoonlijke eerste indruk, in eigen woorden</p>
+                      <span style={{ ...labelStyle, fontStyle: 'italic' }}>{L.vibe}</span>
+                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--color-gray)', margin: 0 }}>{L.vibeDesc}</p>
                       <Textarea placeholder="warm apple pie with whipped cream, grandmother's garden, fresh brioche..." value={data.neus.vibe || ''} onChange={e => setData({ ...data, neus: { ...data.neus, vibe: e.target.value } })} rows={2} />
                     </div>
-                    <ButtonGroup label="Conditie" opties={conditieOpties as unknown as { waarde: string; label: string }[]} waarde={data.neus.conditie} onChange={v => setData({ ...data, neus: { ...data.neus, conditie: v as typeof data.neus.conditie } })} />
-                    <ButtonGroup label="Intensiteit" opties={intensiteitVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.neus.intensiteit} onChange={v => setData({ ...data, neus: { ...data.neus, intensiteit: v as typeof data.neus.intensiteit } })} />
+                    <ButtonGroup label={L.conditie} opties={conditieOpties as unknown as { waarde: string; label: string }[]} waarde={data.neus.conditie} onChange={v => setData({ ...data, neus: { ...data.neus, conditie: v as typeof data.neus.conditie } })} />
+                    <ButtonGroup label={L.intensiteit} opties={intensiteitVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.neus.intensiteit} onChange={v => setData({ ...data, neus: { ...data.neus, intensiteit: v as typeof data.neus.intensiteit } })} />
                     <AromaPicker
                       primair={data.neus.aromaKenmerken.primair}
                       secundair={data.neus.aromaKenmerken.secundair}
@@ -227,8 +230,9 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
                       onPrimairChange={a => setData({ ...data, neus: { ...data.neus, aromaKenmerken: { ...data.neus.aromaKenmerken, primair: a } } })}
                       onSecundairChange={a => setData({ ...data, neus: { ...data.neus, aromaKenmerken: { ...data.neus.aromaKenmerken, secundair: a } } })}
                       onTertiairChange={a => setData({ ...data, neus: { ...data.neus, aromaKenmerken: { ...data.neus.aromaKenmerken, tertiair: a } } })}
+                      lang={lang}
                     />
-                    <ButtonGroup label="Ontwikkeling" opties={ontwikkelingOpties as unknown as { waarde: string; label: string }[]} waarde={data.neus.ontwikkeling} onChange={v => setData({ ...data, neus: { ...data.neus, ontwikkeling: v as typeof data.neus.ontwikkeling } })} />
+                    <ButtonGroup label={L.ontwikkeling} opties={ontwikkelingOpties as unknown as { waarde: string; label: string }[]} waarde={data.neus.ontwikkeling} onChange={v => setData({ ...data, neus: { ...data.neus, ontwikkeling: v as typeof data.neus.ontwikkeling } })} />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -237,15 +241,15 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
               <TabsContent value="palate">
                 <Card>
                   <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <ButtonGroup label="Zoetheid" opties={zoetheidOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.zoetheid} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zoetheid: v as typeof data.gehemelte.zoetheid } })} size="sm" />
-                    <ButtonGroup label="Zuurgraad" opties={schaalVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.zuurgraad} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zuurgraad: v as typeof data.gehemelte.zuurgraad } })} />
-                    {toonTannine && <ButtonGroup label="Tannine" opties={schaalVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.tannine} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, tannine: v as typeof data.gehemelte.tannine } })} />}
-                    {toonMousse && <ButtonGroup label="Mousse" opties={mousseOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.mousseIntensiteit} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, mousseIntensiteit: v as typeof data.gehemelte.mousseIntensiteit } })} />}
-                    <ButtonGroup label="Alcohol" opties={schaalVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.alcohol} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, alcohol: v as typeof data.gehemelte.alcohol } })} />
+                    <ButtonGroup label={L.zoetheid} opties={zoetheidOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.zoetheid} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zoetheid: v as typeof data.gehemelte.zoetheid } })} size="sm" />
+                    <ButtonGroup label={L.zuurgraad} opties={schaalVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.zuurgraad} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, zuurgraad: v as typeof data.gehemelte.zuurgraad } })} />
+                    {toonTannine && <ButtonGroup label={L.tannine} opties={schaalVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.tannine} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, tannine: v as typeof data.gehemelte.tannine } })} />}
+                    {toonMousse && <ButtonGroup label={L.mousse} opties={mousseOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.mousseIntensiteit} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, mousseIntensiteit: v as typeof data.gehemelte.mousseIntensiteit } })} />}
+                    <ButtonGroup label={L.alcohol} opties={schaalVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.alcohol} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, alcohol: v as typeof data.gehemelte.alcohol } })} />
                     <ButtonGroup label="Body" opties={bodyOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.body} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, body: v as typeof data.gehemelte.body } })} />
-                    <ButtonGroup label="Smaakintensiteit" opties={intensiteitVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.smaakIntensiteit} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, smaakIntensiteit: v as typeof data.gehemelte.smaakIntensiteit } })} />
+                    <ButtonGroup label={L.smaakintensiteit} opties={intensiteitVijfOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.smaakIntensiteit} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, smaakIntensiteit: v as typeof data.gehemelte.smaakIntensiteit } })} />
                     <div style={{ borderTop: '4px solid var(--color-border)', paddingTop: '1rem' }}>
-                      <span style={{ ...labelStyle, display: 'block', marginBottom: '1rem' }}>Smaakkenmerken</span>
+                      <span style={{ ...labelStyle, display: 'block', marginBottom: '1rem' }}>{L.smaakkenmerken}</span>
                       <AromaPicker
                         primair={data.gehemelte.smaakKenmerken.primair}
                         secundair={data.gehemelte.smaakKenmerken.secundair}
@@ -253,10 +257,11 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
                         onPrimairChange={a => setData({ ...data, gehemelte: { ...data.gehemelte, smaakKenmerken: { ...data.gehemelte.smaakKenmerken, primair: a } } })}
                         onSecundairChange={a => setData({ ...data, gehemelte: { ...data.gehemelte, smaakKenmerken: { ...data.gehemelte.smaakKenmerken, secundair: a } } })}
                         onTertiairChange={a => setData({ ...data, gehemelte: { ...data.gehemelte, smaakKenmerken: { ...data.gehemelte.smaakKenmerken, tertiair: a } } })}
+                        lang={lang}
                       />
                     </div>
                     <div style={{ borderTop: '4px solid var(--color-border)', paddingTop: '1rem' }}>
-                      <ButtonGroup label="Afdronk — Lengte" opties={afdronkLengteOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.afdronk.lengte} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, afdronk: { ...data.gehemelte.afdronk, lengte: v as typeof data.gehemelte.afdronk.lengte } } })} />
+                      <ButtonGroup label={L.afdronkLengte} opties={afdronkLengteOpties as unknown as { waarde: string; label: string }[]} waarde={data.gehemelte.afdronk.lengte} onChange={v => setData({ ...data, gehemelte: { ...data.gehemelte, afdronk: { ...data.gehemelte.afdronk, lengte: v as typeof data.gehemelte.afdronk.lengte } } })} />
                     </div>
                   </CardContent>
                 </Card>
@@ -267,7 +272,7 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
                 <Card>
                   <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div>
-                      <span style={{ ...labelStyle, display: 'block', marginBottom: '0.75rem' }}>Kwaliteitsniveau — BLIC (Balans, Lengte, Intensiteit, Complexiteit)</span>
+                      <span style={{ ...labelStyle, display: 'block', marginBottom: '0.75rem' }}>{L.kwaliteitBlic}</span>
                       <div role="radiogroup" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                         {kwaliteitOpties.map(opt => {
                           const sel = data.conclusie.kwaliteit === opt.waarde;
@@ -282,10 +287,10 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
                         })}
                       </div>
                     </div>
-                    <ButtonGroup label="Drinkrijpheid / rijpingspotentieel" opties={drinkbaarheidOpties as unknown as { waarde: string; label: string }[]} waarde={data.conclusie.drinkbaarheid} onChange={v => setData({ ...data, conclusie: { ...data.conclusie, drinkbaarheid: v as typeof data.conclusie.drinkbaarheid } })} size="sm" />
+                    <ButtonGroup label={L.drinkbaarheid} opties={drinkbaarheidOpties as unknown as { waarde: string; label: string }[]} waarde={data.conclusie.drinkbaarheid} onChange={v => setData({ ...data, conclusie: { ...data.conclusie, drinkbaarheid: v as typeof data.conclusie.drinkbaarheid } })} size="sm" />
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={labelStyle}>Score (optioneel)</span>
+                        <span style={labelStyle}>{L.scoreKort}</span>
                         <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-gray)' }}>{score !== undefined ? `${score}/10` : '—'}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -297,7 +302,7 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
                         ))}
                       </div>
                     </div>
-                    <Textarea label="Persoonlijke notitie" placeholder="Jouw persoonlijke opmerkingen, context, aankoopreden..." value={notitie} onChange={e => setNotitie(e.target.value)} rows={4} />
+                    <Textarea label={L.persoonlijkeNotitie} placeholder={L.jePersoonlijkeOpmerkingen} value={notitie} onChange={e => setNotitie(e.target.value)} rows={4} />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -306,18 +311,18 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
               <TabsContent value="details">
                 <Card>
                   <CardContent style={{ paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <ButtonGroup label="Hoe verkregen" opties={herkomstOpties} waarde={data.details?.herkomst ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), herkomst: v as NonNullable<WsetWineTasting['details']>['herkomst'] } })} />
-                    <Input label="Waar te koop" placeholder="Bijv. Gall & Gall, Albert Heijn, of directe link" value={data.details?.waarTeKoop || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), waarTeKoop: e.target.value } })} />
+                    <ButtonGroup label={L.hoeVerkregen} opties={getHerkomstOpties(lang)} waarde={data.details?.herkomst ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), herkomst: v as NonNullable<WsetWineTasting['details']>['herkomst'] } })} />
+                    <Input label={L.waarTeKoop} placeholder={L.waarTeKoop_placeholder} value={data.details?.waarTeKoop || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), waarTeKoop: e.target.value } })} />
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                      <Input label="Proef datum" type="date" value={data.details?.proefdatum || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), proefdatum: e.target.value } })} />
-                      <Input label="Serveer temperatuur" placeholder="Bijv. 16-18°C" value={data.details?.serveerTemperatuur || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), serveerTemperatuur: e.target.value } })} />
+                      <Input label={L.proefDatum} type="date" value={data.details?.proefdatum || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), proefdatum: e.target.value } })} />
+                      <Input label={L.serveerTemperatuur} placeholder={L.serveerTemperatuur_placeholder} value={data.details?.serveerTemperatuur || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), serveerTemperatuur: e.target.value } })} />
                     </div>
-                    <Input label="Geproefd met (gerecht)" placeholder="Bijv. Ossobuco, gegrilde entrecote, of puur" value={data.details?.gerechtCombinatie || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), gerechtCombinatie: e.target.value } })} />
-                    <ButtonGroup label="Zou opnieuw kopen" opties={opnieuwKopenOpties} waarde={data.details?.opnieuwKopen ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), opnieuwKopen: v as NonNullable<WsetWineTasting['details']>['opnieuwKopen'] } })} />
+                    <Input label={L.gerechtCombinatie} placeholder={L.gerechtCombinatie_placeholder} value={data.details?.gerechtCombinatie || ''} onChange={e => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), gerechtCombinatie: e.target.value } })} />
+                    <ButtonGroup label={L.opnieuwKopen} opties={getOpnieuwKopenOpties(lang)} waarde={data.details?.opnieuwKopen ?? null} onChange={v => setData({ ...data, details: { ...(data.details || { herkomst: null, betaaldeSamenwerking: false, sparksPodcast: false, publicatieStatus: null, opnieuwKopen: null, aanbevolenVoor: [] }), opnieuwKopen: v as NonNullable<WsetWineTasting['details']>['opnieuwKopen'] } })} />
                     <div>
-                      <span style={{ ...labelStyle, display: 'block', marginBottom: '0.5rem' }}>Aanbevolen voor</span>
+                      <span style={{ ...labelStyle, display: 'block', marginBottom: '0.5rem' }}>{L.aanbevolenVoor}</span>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
-                        {aanbevolenVoorOpties.map(opt => {
+                        {getAanbevolenVoorOpties(lang).map(opt => {
                           const sel = (data.details?.aanbevolenVoor || []).includes(opt.waarde as NonNullable<WsetWineTasting['details']>['aanbevolenVoor'][number]);
                           const current = data.details?.aanbevolenVoor || [];
                           return (
@@ -340,10 +345,10 @@ export const WsetForm = forwardRef<WsetFormHandle, Props>(
 
             {/* Navigation */}
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {tab !== 'appearance' && <Button variant="outline" onClick={prevTab} style={{ flex: 1 }}>Vorige</Button>}
+              {tab !== 'appearance' && <Button variant="outline" onClick={prevTab} style={{ flex: 1 }}>{L.vorige}</Button>}
               {tab !== 'details'
-                ? <Button onClick={nextTab} style={{ flex: 1 }}>Volgende</Button>
-                : <Button onClick={handleSave} style={{ flex: 1 }}>Opslaan</Button>
+                ? <Button onClick={nextTab} style={{ flex: 1 }}>{L.volgende}</Button>
+                : <Button onClick={handleSave} style={{ flex: 1 }}>{L.opslaan}</Button>
               }
             </div>
           </>
