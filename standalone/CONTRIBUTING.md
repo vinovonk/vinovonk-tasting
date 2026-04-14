@@ -29,7 +29,7 @@ The vinovonk maintainer pushes updates using:
 # From vinovonk repo root:
 git subtree push \
   --prefix=src/components/proeven \
-  git@github.com:vinovonk/tasting-notes.git \
+  git@github.com:vinovonk/vinovonk-tasting.git \
   main
 ```
 

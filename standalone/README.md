@@ -31,8 +31,8 @@ Live demo: **[vinovonk.com/en/tasting/](https://vinovonk.com/en/tasting/)** (EN)
 
 ```bash
 # Clone
-git clone https://github.com/vinovonk/tasting-notes.git
-cd tasting-notes
+git clone https://github.com/vinovonk/vinovonk-tasting.git
+cd vinovonk-tasting
 
 # Install (from the standalone/ directory, which contains package.json)
 cd standalone
@@ -50,7 +50,7 @@ npm run dev
 This repository is a **subtree export** of `src/components/proeven/` from the [vinovonk mono-repo](https://vinovonk.com). The `standalone/` directory contains the Vite wrapper to run the app outside of Astro.
 
 ```
-tasting-notes/
+vinovonk-tasting/
 ├── TastingApp.tsx          # Root island + hash router
 ├── router.ts               # useHashRoute() hook
 ├── types.ts                # Zod schemas: TastingNote, WijnProef, etc.
